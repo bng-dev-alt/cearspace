@@ -1,15 +1,21 @@
 import type { Metadata } from "next";
-import { Sora } from "next/font/google";
+import { Sora, Fraunces } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "../contexts/AuthContext";
 import { ThemeProvider, themeNoFlashScript } from "../contexts/ThemeContext";
 import ProtectedRoute from "../components/auth/ProtectedRoute";
 
-// Tělo / UI / karty. Hero nadpisy zůstávají serif (Playfair/Georgia) v globals.css.
-// latin-ext kvůli českým znakům (ř, ů, ě, ...).
+// Tělo / UI / karty. latin-ext kvůli českým znakům (ř, ů, ě, ...).
 const sora = Sora({
   subsets: ["latin", "latin-ext"],
   variable: "--font-sans-next",
+});
+
+// Editorial serif pro nadpisy (Design Bible). Nahrazuje Playfair @import.
+const fraunces = Fraunces({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-serif-next",
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -23,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={sora.variable} suppressHydrationWarning>
+    <html lang="en" className={`${sora.variable} ${fraunces.variable}`} suppressHydrationWarning>
       <head>
         {/* Nastaví téma před prvním vykreslením -> žádné bliknutí (FOUC). */}
         <script dangerouslySetInnerHTML={{ __html: themeNoFlashScript }} />

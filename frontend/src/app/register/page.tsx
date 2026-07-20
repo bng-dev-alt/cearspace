@@ -118,7 +118,7 @@ export default function RegisterPage() {
           </span>
           <h1 
             style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
+              fontFamily: 'var(--font-serif)',
               fontSize: '3rem',
               fontWeight: 700,
               lineHeight: '1.2',
