@@ -7,6 +7,7 @@ import { Plus, Folder, ArrowRight, X, Clock, Trash2, Sparkles } from 'lucide-rea
 import Navbar from '../layout/Navbar';
 import { kanbanService, Project } from '../../services/kanbanService';
 import { useAuth } from '../../hooks/useAuth';
+import { EmptyState } from '../ui';
 import type { GenerateProjectResponse } from '../board/GenerateProjectModal';
 import { Card } from '../../types/kanban';
 
@@ -204,7 +205,7 @@ export default function ProjectDashboard() {
               cursor: 'pointer',
               backgroundColor: 'var(--surface)',
               border: '2px dashed var(--border-color)',
-              borderRadius: '12px',
+              borderRadius: 'var(--radius-card)',
               display: 'flex',
               alignItems: 'center',
               gap: '1.5rem',
@@ -220,7 +221,7 @@ export default function ProjectDashboard() {
             }}
             data-testid="classic-new-project-cta"
           >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', borderRadius: '50%', backgroundColor: 'rgba(32, 157, 215, 0.1)', color: 'var(--blue-primary)', flexShrink: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', borderRadius: 'var(--radius-card)', backgroundColor: 'var(--accent-soft)', color: 'var(--accent)', flexShrink: 0 }}>
               <Plus size={24} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
@@ -235,9 +236,9 @@ export default function ProjectDashboard() {
             style={{
               padding: '2.25rem 2rem',
               cursor: 'pointer',
-              background: 'linear-gradient(135deg, rgba(117, 57, 145, 0.04) 0%, rgba(32, 157, 215, 0.04) 100%)',
-              border: '2px solid rgba(117, 57, 145, 0.2)',
-              borderRadius: '12px',
+              background: 'var(--accent-soft)',
+              border: '1px solid var(--accent-ring)',
+              borderRadius: 'var(--radius-card)',
               display: 'flex',
               alignItems: 'center',
               gap: '1.5rem',
@@ -246,12 +247,12 @@ export default function ProjectDashboard() {
               overflow: 'hidden'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = 'var(--purple-secondary)';
+              e.currentTarget.style.borderColor = 'var(--accent)';
               e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 8px 20px rgba(117, 57, 145, 0.1)';
+              e.currentTarget.style.boxShadow = 'var(--shadow-md)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(117, 57, 145, 0.2)';
+              e.currentTarget.style.borderColor = 'var(--accent-ring)';
               e.currentTarget.style.transform = 'translateY(0)';
               e.currentTarget.style.boxShadow = 'none';
             }}
@@ -260,7 +261,7 @@ export default function ProjectDashboard() {
             <div style={{ position: 'absolute', top: '0.6rem', right: '0.6rem', fontSize: '0.55rem', fontWeight: 800, background: 'var(--purple-secondary)', color: '#ffffff', padding: '0.15rem 0.45rem', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               AI Engine
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', borderRadius: '50%', backgroundColor: 'rgba(117, 57, 145, 0.1)', color: 'var(--purple-secondary)', flexShrink: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', borderRadius: 'var(--radius-card)', backgroundColor: 'var(--surface)', color: 'var(--accent)', flexShrink: 0 }}>
               <Sparkles size={22} />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
@@ -275,11 +276,11 @@ export default function ProjectDashboard() {
             Načítání projektů...
           </div>
         ) : projects.length === 0 ? (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '6rem 0', border: '1px dashed var(--border-color)', borderRadius: '12px', backgroundColor: 'var(--surface)' }}>
-            <Folder size={48} style={{ color: 'var(--gray-text)', marginBottom: '1rem' }} />
-            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--dark-navy)', marginBottom: '0.5rem' }}>Žádné projekty</h3>
-            <p style={{ fontSize: '0.8rem', color: 'var(--gray-text)', marginBottom: 0 }}>Zatím nemáte žádné projekty. Využijte možnosti výše pro vytvoření nového projektu.</p>
-          </div>
+          <EmptyState
+            icon={<Folder size={28} />}
+            title="Žádné projekty"
+            description="Zatím nemáte žádné projekty. Využijte možnosti výše pro vytvoření nového projektu."
+          />
         ) : (
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
             {projects.map((project) => (
@@ -292,7 +293,7 @@ export default function ProjectDashboard() {
                   cursor: 'pointer',
                   backgroundColor: 'var(--surface)',
                   border: '1px solid var(--border-color)',
-                  borderRadius: '10px',
+                  borderRadius: 'var(--radius-card)',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '1.25rem',

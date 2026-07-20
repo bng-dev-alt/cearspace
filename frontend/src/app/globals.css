@@ -2553,7 +2553,7 @@ body {
 .calendar-panel {
   background-color: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius-card);
   margin: 0 3rem 3rem 3rem;
   max-width: 1600px;
   align-self: center;
