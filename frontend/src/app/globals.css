@@ -1205,10 +1205,11 @@ body {
   border-top: 1px solid var(--border-color);
 }
 
-.card-footer-work-label {
-  font-size: 0.65rem;
-  font-weight: 500;
-  color: var(--gray-text);
+/* Avatary vždy k pravému okraji patičky (i u karet bez data splnění). */
+.card-footer-row > .card-assignee-group,
+.card-footer-row > .card-assignee-initials,
+.card-footer-row > .card-assignee-unassigned {
+  margin-left: auto;
 }
 
 .card-due-date {

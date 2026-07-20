@@ -59,7 +59,6 @@ function KanbanCard({
       )}
 
       <div className="card-footer-row">
-        <span className="card-footer-work-label">Product work</span>
         {card.dueDate && (
           <span className="card-due-date" title="Termín splnění">
             <Calendar size={10} className="calendar-icon" />
