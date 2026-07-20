@@ -376,7 +376,7 @@ export default function TaskDetailDrawer({
               style={{
                 border: 'none',
                 outline: 'none',
-                background: mode === 'left' ? '#ffffff' : 'none',
+                background: mode === 'left' ? 'var(--surface)' : 'none',
                 fontSize: '0.72rem',
                 fontWeight: 600,
                 color: mode === 'left' ? 'var(--dark-navy)' : 'var(--gray-text)',
@@ -401,7 +401,7 @@ export default function TaskDetailDrawer({
               style={{
                 border: 'none',
                 outline: 'none',
-                background: mode === 'focused' ? '#ffffff' : 'none',
+                background: mode === 'focused' ? 'var(--surface)' : 'none',
                 fontSize: '0.72rem',
                 fontWeight: 600,
                 color: mode === 'focused' ? 'var(--dark-navy)' : 'var(--gray-text)',
@@ -426,7 +426,7 @@ export default function TaskDetailDrawer({
               style={{
                 border: 'none',
                 outline: 'none',
-                background: mode === 'right' ? '#ffffff' : 'none',
+                background: mode === 'right' ? 'var(--surface)' : 'none',
                 fontSize: '0.72rem',
                 fontWeight: 600,
                 color: mode === 'right' ? 'var(--dark-navy)' : 'var(--gray-text)',

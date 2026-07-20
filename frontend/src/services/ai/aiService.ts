@@ -35,6 +35,9 @@ export const aiService = {
     if (msg.includes('GEMINI_RATE_LIMIT')) {
       return 'Byl překročen limit dotazů pro Gemini. Zkuste to prosím za chvíli.';
     }
+    if (msg.includes('GEMINI_OVERLOADED')) {
+      return 'Model Gemini je momentálně přetížený (vysoká poptávka). Zkuste to prosím za chvíli znovu.';
+    }
     if (msg.includes('GEMINI_TIMEOUT')) {
       return 'Požadavek na Gemini vypršel (timeout). Zkuste to prosím znovu.';
     }

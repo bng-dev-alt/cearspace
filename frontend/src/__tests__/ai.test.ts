@@ -137,6 +137,32 @@ describe('AI Foundation Architecture Unit & Integration Tests', () => {
       ).rejects.toThrow('GEMINI_TIMEOUT');
       expect(mockGenerateContent).toHaveBeenCalledTimes(2);
     });
+
+    test('generateCompletion retries on overloaded model (503/UNAVAILABLE) then succeeds', async () => {
+      process.env.GEMINI_API_KEY = 'valid-key';
+      mockGenerateContent
+        .mockRejectedValueOnce(new Error('503 This model is currently experiencing high demand. status: UNAVAILABLE'))
+        .mockResolvedValueOnce({
+          text: 'OK po retry',
+          usageMetadata: { promptTokenCount: 1, candidatesTokenCount: 1, totalTokenCount: 2 },
+        });
+
+      const res = await geminiProvider.generateCompletion([{ role: 'user', content: 'test' }], { model: 'gemini-3.5-flash' });
+      expect(res.content).toBe('OK po retry');
+      expect(mockGenerateContent).toHaveBeenCalledTimes(2);
+    });
+
+    test('generateCompletion maps repeated overload to GEMINI_OVERLOADED', async () => {
+      process.env.GEMINI_API_KEY = 'valid-key';
+      mockGenerateContent
+        .mockRejectedValueOnce(new Error('503 UNAVAILABLE'))
+        .mockRejectedValueOnce(new Error('503 UNAVAILABLE'));
+
+      await expect(
+        geminiProvider.generateCompletion([{ role: 'user', content: 'test' }], { model: 'gemini-3.5-flash' })
+      ).rejects.toThrow('GEMINI_OVERLOADED');
+      expect(mockGenerateContent).toHaveBeenCalledTimes(2);
+    });
   });
 
   describe('3. AI Service Tests', () => {
@@ -144,6 +170,7 @@ describe('AI Foundation Architecture Unit & Integration Tests', () => {
       expect(aiService.getFriendlyError(new Error('GEMINI_API_KEY_MISSING'))).toContain('Není nastaven API klíč');
       expect(aiService.getFriendlyError(new Error('GEMINI_INVALID_API_KEY'))).toContain('API klíč pro Gemini je neplatný');
       expect(aiService.getFriendlyError(new Error('GEMINI_RATE_LIMIT'))).toContain('Byl překročen limit dotazů');
+      expect(aiService.getFriendlyError(new Error('GEMINI_OVERLOADED'))).toContain('přetížený');
       expect(aiService.getFriendlyError(new Error('GEMINI_TIMEOUT'))).toContain('Požadavek na Gemini vypršel');
       expect(aiService.getFriendlyError(new Error('GEMINI_NETWORK_ERROR'))).toContain('Chyba síťového připojení');
     });

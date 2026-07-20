@@ -79,19 +79,28 @@ export const geminiProvider: AiProvider = {
       }
     };
 
-    // Přechodný timeout (interní pojistka i API deadline) se často zhojí sám.
-    const isTransientTimeout = (e: unknown) => {
+    // Přechodné chyby (timeout, API deadline, přetížený model 503/UNAVAILABLE)
+    // se často zhojí samy -> stojí za jeden automatický retry.
+    const isTransient = (e: unknown) => {
       const m = (e as Error)?.message || '';
-      return m === 'GEMINI_TIMEOUT' || m.includes('DEADLINE_EXCEEDED') || m.includes('504');
+      return (
+        m === 'GEMINI_TIMEOUT' ||
+        m.includes('DEADLINE_EXCEEDED') ||
+        m.includes('504') ||
+        m.includes('UNAVAILABLE') ||
+        m.includes('503') ||
+        m.includes('overloaded') ||
+        m.includes('high demand')
+      );
     };
 
     try {
-      // -> jeden automatický retry.
+      // -> jeden automatický retry na přechodnou chybu.
       let response;
       try {
         response = await attempt();
       } catch (firstErr) {
-        if (isTransientTimeout(firstErr)) {
+        if (isTransient(firstErr)) {
           response = await attempt();
         } else {
           throw firstErr;
@@ -149,6 +158,15 @@ export const geminiProvider: AiProvider = {
         errMsg.includes('504')
       ) {
         throw new Error('GEMINI_TIMEOUT');
+      }
+
+      if (
+        errMsg.includes('UNAVAILABLE') ||
+        errMsg.includes('503') ||
+        errMsg.includes('overloaded') ||
+        errMsg.includes('high demand')
+      ) {
+        throw new Error('GEMINI_OVERLOADED');
       }
 
       if (
