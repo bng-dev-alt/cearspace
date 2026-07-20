@@ -177,7 +177,7 @@ export default function AiRequestHistory({ history }: AiRequestHistoryProps) {
                           {!log.success && log.error && (
                             <div style={{
                               backgroundColor: 'var(--danger-soft)',
-                              border: '1px solid #fca5a5',
+                              border: '1px solid var(--danger-soft)',
                               color: 'var(--danger)',
                               padding: '0.75rem',
                               borderRadius: '8px',

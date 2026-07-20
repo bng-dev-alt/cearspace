@@ -220,7 +220,7 @@ export default function GenerateTasksModal({
 
         {/* Error message */}
         {error && (
-          <div style={{ padding: '0.75rem', backgroundColor: 'var(--danger-soft)', border: '1px solid #fecaca', borderRadius: '6px', marginBottom: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }} data-testid="generate-error">
+          <div style={{ padding: '0.75rem', backgroundColor: 'var(--danger-soft)', border: '1px solid var(--danger-soft)', borderRadius: '6px', marginBottom: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }} data-testid="generate-error">
             <span style={{ fontSize: '0.75rem', color: 'var(--danger)', fontWeight: 600 }}>{error}</span>
             {backlog === null && !isLoading && (
               <button
@@ -357,7 +357,7 @@ export default function GenerateTasksModal({
                     key={idx}
                     style={{
                       padding: '1rem',
-                      border: isDuplicate ? '1px solid #fecaca' : '1px solid var(--border-color)',
+                      border: isDuplicate ? '1px solid var(--danger-soft)' : '1px solid var(--border-color)',
                       backgroundColor: isDuplicate ? '#fffdfd' : 'var(--surface-2)',
                       borderRadius: '8px',
                       display: 'flex',

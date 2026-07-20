@@ -359,7 +359,7 @@ export default function GenerateProjectModal({
               style={{
                 padding: '0.75rem 1.25rem',
                 backgroundColor: 'var(--danger-soft)',
-                border: '1px solid #fca5a5',
+                border: '1px solid var(--danger-soft)',
                 color: 'var(--danger)',
                 borderRadius: '8px',
                 fontSize: '0.8rem',

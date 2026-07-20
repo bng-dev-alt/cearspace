@@ -806,6 +806,7 @@ body {
 /* 3. Statistics Cards Panel */
 .app-stats-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   padding: 0 3rem 1.25rem 3rem;
   max-width: 1600px;
@@ -1464,13 +1465,13 @@ body {
   background-color: var(--purple-secondary);
   border: 1px solid var(--purple-secondary);
   color: var(--text-on-accent);
-  box-shadow: 0 2px 4px rgba(117, 57, 145, 0.15);
+  box-shadow: 0 2px 4px var(--accent-soft);
 }
 
 .btn-submit:hover {
   background-color: var(--accent-hover);
   border-color: var(--accent-hover);
-  box-shadow: 0 4px 8px rgba(117, 57, 145, 0.25);
+  box-shadow: 0 4px 8px var(--accent-soft);
   transform: translateY(-1px);
 }
 
@@ -2248,7 +2249,7 @@ body {
 
 /* AI Assistant Banner */
 .drawer-ai-section {
-  background: linear-gradient(135deg, rgba(117, 57, 145, 0.05) 0%, rgba(32, 157, 215, 0.05) 100%);
+  background: linear-gradient(135deg, var(--accent-soft) 0%, var(--accent-soft) 100%);
   border: 1px dashed var(--purple-secondary);
   border-radius: 8px;
   padding: 1.25rem;
@@ -2368,7 +2369,7 @@ body {
 .ai-spinner {
   width: 14px;
   height: 14px;
-  border: 2px solid rgba(117, 57, 145, 0.2); /* var(--purple-secondary) opaque */
+  border: 2px solid var(--accent-soft); /* var(--purple-secondary) opaque */
   border-top-color: var(--purple-secondary);
   border-radius: 50%;
   animation: aiSpinnerRotate 0.6s linear infinite;
@@ -2411,7 +2412,7 @@ body {
 .multi-select-trigger-btn:hover {
   color: var(--dark-navy) !important;
   border-color: var(--blue-primary) !important;
-  background-color: rgba(32, 157, 215, 0.03) !important;
+  background-color: var(--accent-soft) !important;
 }
 
 /* Dropdown slide down */

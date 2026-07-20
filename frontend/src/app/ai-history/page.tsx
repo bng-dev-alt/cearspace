@@ -264,7 +264,7 @@ export default function AiHistoryPage() {
                           fontSize: '0.75rem',
                           fontWeight: 700,
                           cursor: 'pointer',
-                          boxShadow: '0 2px 4px rgba(117,57,145,0.15)',
+                          boxShadow: '0 2px 4px var(--accent-soft)',
                           transition: 'all 0.2s ease',
                         }}
                         data-testid={`restore-btn-${record.id}`}

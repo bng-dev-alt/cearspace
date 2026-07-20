@@ -83,7 +83,7 @@ export default function RegisterPage() {
             width: '450px',
             height: '450px',
             borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(32,157,215,0.15) 0%, rgba(0,0,0,0) 70%)',
+            background: 'radial-gradient(circle, var(--accent-soft) 0%, rgba(0,0,0,0) 70%)',
           }}
         />
         <div 
@@ -94,7 +94,7 @@ export default function RegisterPage() {
             width: '350px',
             height: '350px',
             borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(117,57,145,0.1) 0%, rgba(0,0,0,0) 70%)',
+            background: 'radial-gradient(circle, var(--accent-soft) 0%, rgba(0,0,0,0) 70%)',
           }}
         />
 
@@ -203,7 +203,7 @@ export default function RegisterPage() {
                 borderRadius: '8px',
                 fontSize: '0.8rem',
                 fontWeight: 600,
-                border: '1px solid #fecaca',
+                border: '1px solid var(--danger-soft)',
               }}
             >
               {error}
@@ -442,7 +442,7 @@ export default function RegisterPage() {
                 gap: '0.5rem',
                 transition: 'var(--spring-transition)',
                 opacity: isSubmitting ? 0.7 : 1,
-                boxShadow: '0 2px 4px rgba(117, 57, 145, 0.1)',
+                boxShadow: '0 2px 4px var(--accent-soft)',
               }}
               onMouseEnter={(e) => e.currentTarget.style.filter = 'brightness(1.1)'}
               onMouseLeave={(e) => e.currentTarget.style.filter = 'none'}

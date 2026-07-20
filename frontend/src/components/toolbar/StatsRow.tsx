@@ -10,7 +10,9 @@ interface StatsRowProps {
   onOpenIntelligence?: () => void;
 }
 
-const FILL: React.CSSProperties = { flex: 1, minWidth: 0 };
+// flex-basis + minWidth necháme dlaždice růst do řady na desktopu a zalomit
+// (2x2) na úzkých obrazovkách místo přeplácnutí textu.
+const FILL: React.CSSProperties = { flex: '1 1 150px', minWidth: '150px' };
 
 function StatsRow({ totalTasks, inProgressCount, completedCount, blockedCount, onOpenIntelligence }: StatsRowProps) {
   // "Chytrá" dlaždice: když jsou blokátory, Blokováno nese mikro-akci a otevře Project Intelligence.

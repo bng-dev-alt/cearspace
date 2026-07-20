@@ -871,7 +871,7 @@ export default function TaskDetailDrawer({
             )}
 
             {aiError && !isAiLoading && (
-              <div className="ai-error-container" data-testid="ai-error" style={{ marginTop: '0.75rem', padding: '0.75rem', backgroundColor: 'var(--danger-soft)', border: '1px solid #fecaca', borderRadius: '6px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <div className="ai-error-container" data-testid="ai-error" style={{ marginTop: '0.75rem', padding: '0.75rem', backgroundColor: 'var(--danger-soft)', border: '1px solid var(--danger-soft)', borderRadius: '6px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 <span className="ai-error-text" style={{ fontSize: '0.75rem', color: 'var(--danger)', fontWeight: 500 }}>{aiError}</span>
                 <button
                   type="button"
