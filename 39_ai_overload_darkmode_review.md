@@ -18,6 +18,11 @@ V AI Project Studiu (a task-detail switcheru) byla natvrdo `#ffffff` pozadí →
 - `TaskDetailDrawer` mode-switcher (Left/Focused/Right) — aktivní `#ffffff` → `var(--surface)` (opraven neviditelný text v dark mode).
 - Ověřeno v prohlížeči (dark mode): tlačítka i pilulky tmavé, text čitelný.
 
+## 3. Dark mode: login/registrace — neviditelné logo a nadpis
+Levý „brand" panel měl `backgroundColor: var(--text)` — v light mode tmavá navy (bílý text funguje), ale v **dark mode se `--text` obrací na světlou** → panel zesvětlal a bílé `clearspace.` logo + serif nadpis „Pracujte s lehkostí." zmizely.
+
+**Oprava:** panel na **pevnou ocean navy `#0e2833`** (nezávislou na motivu). Bílé logo/nadpis + teal eyebrow + muted popis teď čitelné v obou režimech. Login i registrace. Ověřeno v prohlížeči (dark mode).
+
 ## Upravené soubory
 - `services/ai/geminiProvider.ts` — retry i na overload, mapování `GEMINI_OVERLOADED`.
 - `services/ai/aiService.ts` — friendly hláška.

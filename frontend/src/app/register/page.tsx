@@ -63,7 +63,7 @@ export default function RegisterPage() {
       <div 
         style={{
           flex: '1.2',
-          backgroundColor: 'var(--text)', // Dark Navy
+          backgroundColor: '#0e2833', // Pevná ocean navy -- nezávislá na motivu (var(--text) se v dark mode obracel na světlou -> bílé logo/nadpis mizely)
           padding: '4rem',
           display: 'flex',
           flexDirection: 'column',
