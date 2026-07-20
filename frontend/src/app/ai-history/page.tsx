@@ -129,7 +129,7 @@ export default function AiHistoryPage() {
             display: 'flex',
             alignItems: 'center',
             gap: '0.6rem',
-            border: '1px solid #10b981',
+            border: '1px solid var(--success)',
             boxShadow: '0 4px 12px rgba(16, 185, 129, 0.08)'
           }}>
             <Check size={18} />

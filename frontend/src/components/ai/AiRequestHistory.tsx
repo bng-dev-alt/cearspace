@@ -64,7 +64,7 @@ export default function AiRequestHistory({ history }: AiRequestHistoryProps) {
           fontFamily: 'var(--font-sans)',
         }}>
           <thead>
-            <tr style={{ backgroundColor: 'rgba(0, 0, 0, 0.02)', borderBottom: '1px solid var(--border-color)' }}>
+            <tr style={{ backgroundColor: 'var(--surface-2)', borderBottom: '1px solid var(--border-color)' }}>
               <th style={{ width: '40px', padding: '0.75rem 1rem' }}></th>
               <th style={{ padding: '0.75rem 1rem', fontWeight: 700, color: 'var(--dark-navy)' }}>Čas</th>
               <th style={{ padding: '0.75rem 1rem', fontWeight: 700, color: 'var(--dark-navy)' }}>Funkce</th>
@@ -112,7 +112,7 @@ export default function AiRequestHistory({ history }: AiRequestHistoryProps) {
                     </td>
                     <td style={{ padding: '0.75rem 1rem' }}>
                       {log.success ? (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: '#10b981', fontWeight: 600 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--success)', fontWeight: 600 }}>
                           <CheckCircle2 size={14} /> OK
                         </div>
                       ) : (

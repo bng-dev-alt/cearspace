@@ -23,21 +23,18 @@ export default function AiBudgetWidget({ monthlyUsage, budgetLimit, onBudgetChan
   const percentUsed = budgetLimit > 0 ? (monthlyUsage / budgetLimit) * 100 : 0;
   
   // Dynamic color for progress bar
-  let barColor = '#753991'; // purple
+  let barColor = 'var(--accent)'; // emerald (v normě)
   if (percentUsed >= 100) {
     barColor = 'var(--danger)'; // red
   } else if (percentUsed >= 80) {
-    barColor = '#ecad0a'; // amber/yellow
+    barColor = 'var(--warning)'; // amber
   }
 
   return (
     <div
+      className="cs-card"
       style={{
-        backgroundColor: 'var(--surface)',
-        border: '1px solid var(--border-color)',
-        borderRadius: '12px',
         padding: '1.25rem',
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.02)',
         display: 'flex',
         flexDirection: 'column',
         gap: '0.85rem',
@@ -57,7 +54,7 @@ export default function AiBudgetWidget({ monthlyUsage, budgetLimit, onBudgetChan
                 border: 'none',
                 cursor: 'pointer',
                 padding: '0.2rem',
-                color: '#10b981',
+                color: 'var(--success)',
                 display: 'flex',
                 alignItems: 'center',
               }}

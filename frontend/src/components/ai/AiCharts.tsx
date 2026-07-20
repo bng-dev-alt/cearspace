@@ -6,6 +6,16 @@ interface AiChartsProps {
   featureBreakdown: FeatureStats[];
 }
 
+// Tlumená kategoriální paleta (Design Bible: muted colors). Funguje v Dark i Light.
+const DIST_COLORS = ['var(--accent)', 'var(--warning)', '#8b7fc7', 'var(--text-muted)'];
+
+const CARD_STYLE: React.CSSProperties = {
+  padding: '1.25rem',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '0.85rem',
+};
+
 export default function AiCharts({ logs, featureBreakdown }: AiChartsProps) {
   // 1. Prepare data for the last 7 days (including today)
   const last7Days = Array.from({ length: 7 }).map((_, idx) => {
@@ -38,29 +48,20 @@ export default function AiCharts({ logs, featureBreakdown }: AiChartsProps) {
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1rem', width: '100%' }}>
-      
+
       {/* Chart 1: Daily Requests & Cost */}
-      <div style={{
-        backgroundColor: 'var(--surface)',
-        border: '1px solid var(--border-color)',
-        borderRadius: '12px',
-        padding: '1.25rem',
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.02)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '0.85rem',
-      }}>
+      <div className="cs-card" style={CARD_STYLE}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
-          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--dark-navy)' }}>Denní aktivita</span>
-          <span style={{ fontSize: '0.7rem', color: 'var(--gray-text)' }}>Počet požadavků za posledních 7 dní</span>
+          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)' }}>Denní aktivita</span>
+          <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Počet požadavků za posledních 7 dní</span>
         </div>
 
         <div style={{ height: '140px', width: '100%', position: 'relative', marginTop: '0.5rem' }}>
           <svg style={{ width: '100%', height: '100%', overflow: 'visible' }}>
             {/* Grid lines */}
-            <line x1="0" y1="0" x2="100%" y2="0" stroke="var(--border-color)" strokeWidth="1" strokeDasharray="3" />
-            <line x1="0" y1="60" x2="100%" y2="60" stroke="var(--border-color)" strokeWidth="1" strokeDasharray="3" />
-            <line x1="0" y1="120" x2="100%" y2="120" stroke="var(--border-color)" strokeWidth="1" />
+            <line x1="0" y1="0" x2="100%" y2="0" stroke="var(--border)" strokeWidth="1" strokeDasharray="3" />
+            <line x1="0" y1="60" x2="100%" y2="60" stroke="var(--border)" strokeWidth="1" strokeDasharray="3" />
+            <line x1="0" y1="120" x2="100%" y2="120" stroke="var(--border)" strokeWidth="1" />
 
             {/* Render Bars */}
             {last7Days.map((day, idx) => {
@@ -86,7 +87,7 @@ export default function AiCharts({ logs, featureBreakdown }: AiChartsProps) {
                     width="5%"
                     height={barHeight}
                     rx="4"
-                    fill={day.requests > 0 ? '#209dd7' : '#e5e7eb'}
+                    fill={day.requests > 0 ? 'var(--accent)' : 'var(--surface-3)'}
                     style={{ transition: 'all 0.3s ease' }}
                   />
                   {/* Cost Indicator Dot */}
@@ -95,7 +96,7 @@ export default function AiCharts({ logs, featureBreakdown }: AiChartsProps) {
                       cx={`${xPercent}%`}
                       cy={120 - Math.min((day.cost / 5) * 100, 100)} // scale up to 5 CZK
                       r="4"
-                      fill="#753991"
+                      fill="var(--warning)"
                     />
                   )}
                   {/* Date text */}
@@ -103,7 +104,7 @@ export default function AiCharts({ logs, featureBreakdown }: AiChartsProps) {
                     x={`${xPercent}%`}
                     y="138"
                     fontSize="9"
-                    fill="var(--gray-text)"
+                    fill="var(--text-secondary)"
                     textAnchor="middle"
                     fontWeight="600"
                   >
@@ -115,7 +116,7 @@ export default function AiCharts({ logs, featureBreakdown }: AiChartsProps) {
                       x={`${xPercent}%`}
                       y={yPos - 6}
                       fontSize="9"
-                      fill="var(--dark-navy)"
+                      fill="var(--text)"
                       textAnchor="middle"
                       fontWeight="700"
                     >
@@ -128,32 +129,23 @@ export default function AiCharts({ logs, featureBreakdown }: AiChartsProps) {
           </svg>
         </div>
 
-        <div style={{ display: 'flex', gap: '1rem', fontSize: '0.7rem', color: 'var(--gray-text)', marginTop: '0.25rem' }}>
+        <div style={{ display: 'flex', gap: '1rem', fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '0.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '2px', backgroundColor: '#209dd7' }} />
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', backgroundColor: 'var(--accent)' }} />
             <span>AI Požadavky</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#753991' }} />
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--warning)' }} />
             <span>Náklady (CZK)</span>
           </div>
         </div>
       </div>
 
       {/* Chart 2: Feature Distribution */}
-      <div style={{
-        backgroundColor: 'var(--surface)',
-        border: '1px solid var(--border-color)',
-        borderRadius: '12px',
-        padding: '1.25rem',
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.02)',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '0.85rem',
-      }}>
+      <div className="cs-card" style={CARD_STYLE}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
-          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--dark-navy)' }}>Distribuce AI funkcí</span>
-          <span style={{ fontSize: '0.7rem', color: 'var(--gray-text)' }}>Poměr a celková spotřeba podle modulů</span>
+          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text)' }}>Distribuce AI funkcí</span>
+          <span style={{ fontSize: '0.7rem', color: 'var(--text-secondary)' }}>Poměr a celková spotřeba podle modulů</span>
         </div>
 
         {totalFeatureRequests === 0 ? (
@@ -162,7 +154,7 @@ export default function AiCharts({ logs, featureBreakdown }: AiChartsProps) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: 'var(--gray-text)',
+            color: 'var(--text-muted)',
             fontSize: '0.75rem',
           }}>
             Žádná aktivita
@@ -174,14 +166,13 @@ export default function AiCharts({ logs, featureBreakdown }: AiChartsProps) {
               height: '16px',
               width: '100%',
               display: 'flex',
-              borderRadius: '9999px',
+              borderRadius: 'var(--radius-full)',
               overflow: 'hidden',
               backgroundColor: 'var(--surface-2)',
             }}>
               {featureBreakdown.map((item, idx) => {
                 const percentage = (item.requestCount / totalFeatureRequests) * 100;
-                const colors = ['#209dd7', '#ecad0a', '#753991', '#888888'];
-                const color = colors[idx % colors.length];
+                const color = DIST_COLORS[idx % DIST_COLORS.length];
                 return (
                   <div
                     key={idx}
@@ -201,15 +192,14 @@ export default function AiCharts({ logs, featureBreakdown }: AiChartsProps) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.25rem' }}>
               {featureBreakdown.map((item, idx) => {
                 const percentage = (item.requestCount / totalFeatureRequests) * 100;
-                const colors = ['#209dd7', '#ecad0a', '#753991', '#888888'];
-                const color = colors[idx % colors.length];
+                const color = DIST_COLORS[idx % DIST_COLORS.length];
                 return (
                   <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.72rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--dark-navy)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--text)' }}>
                       <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: color }} />
                       <span>{item.featureName}</span>
                     </div>
-                    <div style={{ display: 'flex', gap: '0.5rem', color: 'var(--gray-text)', fontWeight: 600 }}>
+                    <div style={{ display: 'flex', gap: '0.5rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
                       <span>{item.requestCount}x</span>
                       <span>({percentage.toFixed(0)}%)</span>
                     </div>

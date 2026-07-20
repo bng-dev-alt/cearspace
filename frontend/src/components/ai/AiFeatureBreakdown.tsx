@@ -32,7 +32,7 @@ export default function AiFeatureBreakdown({ breakdown }: AiFeatureBreakdownProp
         fontFamily: 'var(--font-sans)',
       }}>
         <thead>
-          <tr style={{ backgroundColor: 'rgba(0, 0, 0, 0.02)', borderBottom: '1px solid var(--border-color)' }}>
+          <tr style={{ backgroundColor: 'var(--surface-2)', borderBottom: '1px solid var(--border-color)' }}>
             <th style={{ padding: '0.75rem 1rem', fontWeight: 700, color: 'var(--dark-navy)' }}>AI Funkce</th>
             <th style={{ padding: '0.75rem 1rem', fontWeight: 700, color: 'var(--dark-navy)' }}>Počet volání</th>
             <th style={{ padding: '0.75rem 1rem', fontWeight: 700, color: 'var(--dark-navy)' }}>Vstupní tokeny</th>
@@ -59,11 +59,11 @@ export default function AiFeatureBreakdown({ breakdown }: AiFeatureBreakdownProp
                     width: '6px',
                     height: '6px',
                     borderRadius: '50%',
-                    backgroundColor: item.featureName.includes('Project') 
-                      ? '#209dd7' 
-                      : item.featureName.includes('Tasks') 
-                        ? '#ecad0a' 
-                        : '#753991'
+                    backgroundColor: item.featureName.includes('Project')
+                      ? 'var(--accent)'
+                      : item.featureName.includes('Tasks')
+                        ? 'var(--warning)'
+                        : '#8b7fc7'
                   }} />
                   {item.featureName}
                 </div>

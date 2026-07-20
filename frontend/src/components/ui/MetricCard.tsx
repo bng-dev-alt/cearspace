@@ -10,6 +10,8 @@ interface MetricCardProps {
   onClick?: () => void;
   /** Volitelná mikro-akce vpravo (nahradí trailing chevron). */
   action?: React.ReactNode;
+  /** Skryje trailing chevron (pro analytics karty, které nejsou klikatelné). */
+  hideTrail?: boolean;
   testId?: string;
   className?: string;
   style?: React.CSSProperties;
@@ -24,12 +26,19 @@ export default function MetricCard({
   trend,
   onClick,
   action,
+  hideTrail = false,
   testId,
   className = '',
   style,
 }: MetricCardProps) {
   const interactive = !!onClick;
   const cls = ['cs-metric', interactive && 'cs-metric--interactive', className].filter(Boolean).join(' ');
+
+  const trail = action
+    ? action
+    : hideTrail
+      ? null
+      : <span className="cs-metric-trail" aria-hidden="true"><ChevronRight size={16} /></span>;
 
   const inner = (
     <>
@@ -39,7 +48,7 @@ export default function MetricCard({
         <span className={`cs-metric-value ${danger ? 'cs-metric-value--danger' : ''}`}>{value}</span>
         {trend && <span className="cs-metric-trend">{trend}</span>}
       </span>
-      {action ? action : <span className="cs-metric-trail" aria-hidden="true"><ChevronRight size={16} /></span>}
+      {trail}
     </>
   );
 
