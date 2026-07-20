@@ -1,0 +1,14 @@
+# OS / editor junk
+.DS_Store
+Thumbs.db
+
+# Local tooling
+.claude/
+
+# Env (belt-and-suspenders; frontend/.gitignore also covers these)
+**/.env.local
+**/.env*.local
+
+# Dependencies / build (also covered in frontend/.gitignore)
+**/node_modules/
+**/.next/

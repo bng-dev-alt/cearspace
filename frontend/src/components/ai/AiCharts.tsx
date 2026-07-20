@@ -1,0 +1,226 @@
+import React from 'react';
+import { AiRequestLog, FeatureStats } from '../../services/ai/aiAnalyticsService';
+
+interface AiChartsProps {
+  logs: AiRequestLog[];
+  featureBreakdown: FeatureStats[];
+}
+
+export default function AiCharts({ logs, featureBreakdown }: AiChartsProps) {
+  // 1. Prepare data for the last 7 days (including today)
+  const last7Days = Array.from({ length: 7 }).map((_, idx) => {
+    const d = new Date();
+    d.setDate(d.getDate() - (6 - idx));
+    return {
+      dateStr: d.toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric' }),
+      dateKey: d.toDateString(),
+      requests: 0,
+      tokens: 0,
+      cost: 0,
+    };
+  });
+
+  logs.forEach(log => {
+    const logDateKey = new Date(log.timestamp).toDateString();
+    const dayBucket = last7Days.find(day => day.dateKey === logDateKey);
+    if (dayBucket) {
+      dayBucket.requests += 1;
+      dayBucket.tokens += log.totalTokens || 0;
+      dayBucket.cost += log.estimatedCostCzk || 0;
+    }
+  });
+
+  // Scale for Daily Requests
+  const maxRequests = Math.max(...last7Days.map(d => d.requests), 4);
+
+  // 2. Prepare feature distribution stacked bar
+  const totalFeatureRequests = featureBreakdown.reduce((sum, f) => sum + f.requestCount, 0);
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1rem', width: '100%' }}>
+      
+      {/* Chart 1: Daily Requests & Cost */}
+      <div style={{
+        backgroundColor: 'var(--surface)',
+        border: '1px solid var(--border-color)',
+        borderRadius: '12px',
+        padding: '1.25rem',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.02)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.85rem',
+      }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--dark-navy)' }}>Denní aktivita</span>
+          <span style={{ fontSize: '0.7rem', color: 'var(--gray-text)' }}>Počet požadavků za posledních 7 dní</span>
+        </div>
+
+        <div style={{ height: '140px', width: '100%', position: 'relative', marginTop: '0.5rem' }}>
+          <svg style={{ width: '100%', height: '100%', overflow: 'visible' }}>
+            {/* Grid lines */}
+            <line x1="0" y1="0" x2="100%" y2="0" stroke="var(--border-color)" strokeWidth="1" strokeDasharray="3" />
+            <line x1="0" y1="60" x2="100%" y2="60" stroke="var(--border-color)" strokeWidth="1" strokeDasharray="3" />
+            <line x1="0" y1="120" x2="100%" y2="120" stroke="var(--border-color)" strokeWidth="1" />
+
+            {/* Render Bars */}
+            {last7Days.map((day, idx) => {
+              const xPercent = (idx / 6) * 88 + 6; // range from 6% to 94%
+              const barHeight = (day.requests / maxRequests) * 100; // max height 100px
+              const yPos = 120 - barHeight;
+
+              return (
+                <g key={idx}>
+                  {/* Background tracking hover area */}
+                  <rect
+                    x={`${xPercent - 4}%`}
+                    y="0"
+                    width="8%"
+                    height="120"
+                    fill="transparent"
+                    style={{ cursor: 'pointer' }}
+                  />
+                  {/* Request bar */}
+                  <rect
+                    x={`${xPercent - 2.5}%`}
+                    y={yPos}
+                    width="5%"
+                    height={barHeight}
+                    rx="4"
+                    fill={day.requests > 0 ? '#209dd7' : '#e5e7eb'}
+                    style={{ transition: 'all 0.3s ease' }}
+                  />
+                  {/* Cost Indicator Dot */}
+                  {day.cost > 0 && (
+                    <circle
+                      cx={`${xPercent}%`}
+                      cy={120 - Math.min((day.cost / 5) * 100, 100)} // scale up to 5 CZK
+                      r="4"
+                      fill="#753991"
+                    />
+                  )}
+                  {/* Date text */}
+                  <text
+                    x={`${xPercent}%`}
+                    y="138"
+                    fontSize="9"
+                    fill="var(--gray-text)"
+                    textAnchor="middle"
+                    fontWeight="600"
+                  >
+                    {day.dateStr}
+                  </text>
+                  {/* Request value label on top of bar */}
+                  {day.requests > 0 && (
+                    <text
+                      x={`${xPercent}%`}
+                      y={yPos - 6}
+                      fontSize="9"
+                      fill="var(--dark-navy)"
+                      textAnchor="middle"
+                      fontWeight="700"
+                    >
+                      {day.requests}
+                    </text>
+                  )}
+                </g>
+              );
+            })}
+          </svg>
+        </div>
+
+        <div style={{ display: 'flex', gap: '1rem', fontSize: '0.7rem', color: 'var(--gray-text)', marginTop: '0.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '2px', backgroundColor: '#209dd7' }} />
+            <span>AI Požadavky</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#753991' }} />
+            <span>Náklady (CZK)</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Chart 2: Feature Distribution */}
+      <div style={{
+        backgroundColor: 'var(--surface)',
+        border: '1px solid var(--border-color)',
+        borderRadius: '12px',
+        padding: '1.25rem',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.02)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.85rem',
+      }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+          <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--dark-navy)' }}>Distribuce AI funkcí</span>
+          <span style={{ fontSize: '0.7rem', color: 'var(--gray-text)' }}>Poměr a celková spotřeba podle modulů</span>
+        </div>
+
+        {totalFeatureRequests === 0 ? (
+          <div style={{
+            height: '140px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--gray-text)',
+            fontSize: '0.75rem',
+          }}>
+            Žádná aktivita
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', justifyContent: 'center', height: '100%' }}>
+            {/* Render a stacked distribution bar */}
+            <div style={{
+              height: '16px',
+              width: '100%',
+              display: 'flex',
+              borderRadius: '9999px',
+              overflow: 'hidden',
+              backgroundColor: 'var(--surface-2)',
+            }}>
+              {featureBreakdown.map((item, idx) => {
+                const percentage = (item.requestCount / totalFeatureRequests) * 100;
+                const colors = ['#209dd7', '#ecad0a', '#753991', '#888888'];
+                const color = colors[idx % colors.length];
+                return (
+                  <div
+                    key={idx}
+                    style={{
+                      width: `${percentage}%`,
+                      backgroundColor: color,
+                      height: '100%',
+                      transition: 'width 0.3s ease',
+                    }}
+                    title={`${item.featureName}: ${item.requestCount} requestů (${percentage.toFixed(1)}%)`}
+                  />
+                );
+              })}
+            </div>
+
+            {/* List breakdown with colors */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.25rem' }}>
+              {featureBreakdown.map((item, idx) => {
+                const percentage = (item.requestCount / totalFeatureRequests) * 100;
+                const colors = ['#209dd7', '#ecad0a', '#753991', '#888888'];
+                const color = colors[idx % colors.length];
+                return (
+                  <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.72rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--dark-navy)' }}>
+                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: color }} />
+                      <span>{item.featureName}</span>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem', color: 'var(--gray-text)', fontWeight: 600 }}>
+                      <span>{item.requestCount}x</span>
+                      <span>({percentage.toFixed(0)}%)</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+
+    </div>
+  );
+}
