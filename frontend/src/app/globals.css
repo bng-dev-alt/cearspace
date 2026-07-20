@@ -511,7 +511,7 @@ body {
 .toolbar-search-input:focus {
   width: 220px;
   border-color: var(--blue-primary);
-  box-shadow: 0 0 0 2px rgba(32, 157, 215, 0.1);
+  box-shadow: 0 0 0 2px var(--accent-soft);
 }
 
 .toolbar-divider {
@@ -558,7 +558,7 @@ body {
 
 .toolbar-select:focus {
   border-color: var(--blue-primary);
-  box-shadow: 0 0 0 2px rgba(32, 157, 215, 0.08);
+  box-shadow: 0 0 0 2px var(--accent-soft);
 }
 
 /* Custom dynamic tag dropdown overlay styling */
@@ -1037,17 +1037,18 @@ body {
 }
 
 .column-card-count {
-  background-color: var(--border);
-  color: var(--dark-navy);
+  background-color: var(--accent-soft);
+  color: var(--accent);
   font-size: 0.7rem;
   font-weight: 700;
-  padding: 0 0.4rem;
-  min-width: 18px;
-  height: 18px;
-  border-radius: 9px;
+  padding: 0 0.45rem;
+  min-width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Plus button in column header */
@@ -1066,7 +1067,7 @@ body {
 }
 
 .column-header-plus:hover {
-  background-color: rgba(32, 157, 215, 0.15);
+  background-color: var(--accent-soft);
   transform: scale(1.1);
 }
 
@@ -1085,13 +1086,13 @@ body {
 /* 5. clearspace. Pure White Cards */
 .card {
   background-color: var(--bg-card);
-  border-radius: 8px;
+  border-radius: var(--radius-card);
   border: 1px solid var(--border-color);
   padding: 1.1rem 1.15rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  box-shadow: var(--shadow-sm);
   cursor: grab;
   position: relative;
-  transition: var(--spring-transition);
+  transition: var(--transition-base);
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
@@ -1109,8 +1110,8 @@ body {
 /* Hover effect */
 .card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-  border-color: var(--text-muted);
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent);
 }
 
 /* Drag indicator handle on card */
@@ -1400,7 +1401,7 @@ body {
 
 .form-input:focus {
   border-color: var(--blue-primary);
-  box-shadow: 0 0 0 2px rgba(32, 157, 215, 0.08);
+  box-shadow: 0 0 0 2px var(--accent-soft);
 }
 
 .form-textarea {
@@ -1421,7 +1422,7 @@ body {
 
 .form-textarea:focus {
   border-color: var(--blue-primary);
-  box-shadow: 0 0 0 2px rgba(32, 157, 215, 0.08);
+  box-shadow: 0 0 0 2px var(--accent-soft);
 }
 
 .modal-footer {
@@ -1949,7 +1950,7 @@ body {
 .drawer-title-input:focus {
   background-color: var(--surface);
   border-color: var(--blue-primary);
-  box-shadow: 0 0 0 2px rgba(32, 157, 215, 0.1);
+  box-shadow: 0 0 0 2px var(--accent-soft);
 }
 
 /* Metadata Fields Grid */
@@ -2026,7 +2027,7 @@ body {
 
 .drawer-desc-textarea:focus {
   border-color: var(--blue-primary);
-  box-shadow: 0 0 0 2px rgba(32, 157, 215, 0.1);
+  box-shadow: 0 0 0 2px var(--accent-soft);
 }
 
 /* Checklist Section */
@@ -2305,7 +2306,7 @@ body {
 }
 
 .toolbar-filter-toggle-btn.active {
-  background-color: rgba(32, 157, 215, 0.08);
+  background-color: var(--accent-soft);
   border-color: var(--blue-primary);
   color: var(--blue-primary);
 }
