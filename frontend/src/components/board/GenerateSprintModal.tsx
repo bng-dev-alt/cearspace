@@ -257,8 +257,8 @@ export default function GenerateSprintModal({
               </div>
 
               <div style={{
-                backgroundColor: 'rgba(32, 157, 215, 0.05)',
-                border: '1px solid rgba(32, 157, 215, 0.15)',
+                backgroundColor: 'var(--accent-soft)',
+                border: '1px solid var(--accent-soft)',
                 borderRadius: '8px',
                 padding: '0.75rem',
                 display: 'flex',
@@ -308,7 +308,7 @@ export default function GenerateSprintModal({
               <div style={{
                 width: '45px',
                 height: '45px',
-                border: '4px solid rgba(32, 157, 215, 0.1)',
+                border: '4px solid var(--accent-soft)',
                 borderTopColor: 'var(--accent)',
                 borderRadius: '50%',
                 animation: 'spin 1s linear infinite',
@@ -336,8 +336,8 @@ export default function GenerateSprintModal({
               
               {/* Sprint Goal Header Card */}
               <div style={{
-                backgroundColor: 'rgba(32, 157, 215, 0.03)',
-                border: '1px solid rgba(32, 157, 215, 0.12)',
+                backgroundColor: 'var(--accent-soft)',
+                border: '1px solid var(--accent-soft)',
                 borderRadius: '12px',
                 padding: '1.25rem',
                 display: 'flex',
@@ -418,7 +418,7 @@ export default function GenerateSprintModal({
                         {/* Badges */}
                         <div style={{ display: 'flex', gap: '0.4rem', flexShrink: 0 }}>
                           <span style={{
-                            backgroundColor: 'rgba(117, 57, 145, 0.08)',
+                            backgroundColor: 'var(--accent-soft)',
                             color: 'var(--accent)',
                             padding: '0.15rem 0.4rem',
                             borderRadius: '4px',

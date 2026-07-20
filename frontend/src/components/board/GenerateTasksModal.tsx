@@ -334,7 +334,7 @@ export default function GenerateTasksModal({
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }} data-testid="generate-preview">
             
             {/* Project Summary */}
-            <div style={{ padding: '0.85rem', backgroundColor: 'rgba(32, 157, 215, 0.05)', border: '1px solid rgba(32, 157, 215, 0.15)', borderRadius: '8px' }}>
+            <div style={{ padding: '0.85rem', backgroundColor: 'var(--accent-soft)', border: '1px solid var(--accent-soft)', borderRadius: '8px' }}>
               <span style={{ fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--blue-primary)', display: 'block', marginBottom: '0.25rem', letterSpacing: '0.05em' }}>Souhrn projektu</span>
               <p style={{ fontSize: '0.8rem', color: 'var(--dark-navy)', margin: 0, lineHeight: 1.4 }}>{backlog.projectSummary}</p>
               <span style={{ fontSize: '0.7rem', color: 'var(--gray-text)', display: 'block', marginTop: '0.5rem' }}>Celkem navrženo úkolů: <strong>{backlog.tasks.length}</strong></span>

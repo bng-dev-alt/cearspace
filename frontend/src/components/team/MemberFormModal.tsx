@@ -22,7 +22,7 @@ interface MemberFormModalProps {
   }) => Promise<void>;
 }
 
-const PRESET_COLORS = ['#0d9488', '#6366f1', '#e0a80a', '#10b981', '#f43f5e', '#f97316'];
+const PRESET_COLORS = ['#0f9d6e', '#6366f1', '#e0a80a', '#38bdf8', '#f43f5e', '#f97316'];
 
 export default function MemberFormModal({ isOpen, mode, member, isOwner, onClose, onSave }: MemberFormModalProps) {
   const [fullName, setFullName] = useState('');

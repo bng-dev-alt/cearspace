@@ -315,7 +315,7 @@ export default function GenerateProjectModal({
                 width: '32px',
                 height: '32px',
                 borderRadius: '8px',
-                background: 'linear-gradient(135deg, #753991, #209dd7)',
+                background: 'var(--accent)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -393,7 +393,7 @@ export default function GenerateProjectModal({
                 style={{
                   fontSize: '0.9rem',
                   fontWeight: 750,
-                  background: 'linear-gradient(90deg, #753991, #209dd7)',
+                  background: 'var(--accent)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}
@@ -472,7 +472,7 @@ export default function GenerateProjectModal({
                           fontWeight: 700,
                           color: isSelected ? 'var(--purple-secondary)' : 'var(--dark-navy)',
                           transition: 'all 0.2s',
-                          boxShadow: isSelected ? '0 2px 8px rgba(117, 57, 145, 0.08)' : 'none',
+                          boxShadow: isSelected ? '0 2px 8px var(--accent-soft)' : 'none',
                         }}
                         onMouseEnter={(e) => {
                           if (!isSelected) e.currentTarget.style.borderColor = 'var(--blue-primary)';
@@ -775,7 +775,7 @@ export default function GenerateProjectModal({
                         width: '56px',
                         height: '56px',
                         borderRadius: '10px',
-                        backgroundColor: generatedProject.accentColor || 'rgba(32, 157, 215, 0.1)',
+                        backgroundColor: generatedProject.accentColor || 'var(--accent-soft)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -896,7 +896,7 @@ export default function GenerateProjectModal({
                           style={{
                             fontSize: '0.75rem',
                             fontWeight: 700,
-                            backgroundColor: 'rgba(32, 157, 215, 0.1)',
+                            backgroundColor: 'var(--accent-soft)',
                             color: 'var(--blue-primary)',
                             padding: '0.3rem 0.75rem',
                             borderRadius: '20px',
@@ -920,7 +920,7 @@ export default function GenerateProjectModal({
                           style={{
                             fontSize: '0.75rem',
                             fontWeight: 700,
-                            backgroundColor: 'rgba(117, 57, 145, 0.1)',
+                            backgroundColor: 'var(--accent-soft)',
                             color: 'var(--purple-secondary)',
                             padding: '0.3rem 0.75rem',
                             borderRadius: '20px',
@@ -1075,7 +1075,7 @@ export default function GenerateProjectModal({
                                   ⏱ {task.estimate}
                                 </span>
                               )}
-                              <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--blue-primary)', backgroundColor: 'rgba(32, 157, 215, 0.1)', padding: '0.15rem 0.45rem', borderRadius: '4px' }}>
+                              <span style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--blue-primary)', backgroundColor: 'var(--accent-soft)', padding: '0.15rem 0.45rem', borderRadius: '4px' }}>
                                 ⚙ {task.recommendedColumn}
                               </span>
                               {isExpanded ? <ChevronUp size={16} color="var(--gray-text)" /> : <ChevronDown size={16} color="var(--gray-text)" />}

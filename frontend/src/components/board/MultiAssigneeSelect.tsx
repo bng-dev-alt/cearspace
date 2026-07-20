@@ -300,7 +300,7 @@ export default function MultiAssigneeSelect({
                       backgroundColor: isFocused
                         ? 'var(--bg-column)'
                         : isSelected
-                        ? 'rgba(32, 157, 215, 0.05)'
+                        ? 'var(--accent-soft)'
                         : 'transparent',
                       textAlign: 'left',
                       cursor: 'pointer',

@@ -174,7 +174,7 @@ export default function ProjectMembersModal({
                       padding: '0.55rem 0.75rem',
                       borderRadius: '8px',
                       border: isIn ? '1px solid var(--blue-primary)' : '1px solid var(--border-color)',
-                      backgroundColor: isIn ? 'rgba(32, 157, 215, 0.06)' : 'var(--bg-column)',
+                      backgroundColor: isIn ? 'var(--accent-soft)' : 'var(--bg-column)',
                       cursor: 'pointer',
                       textAlign: 'left',
                       transition: 'all 0.15s ease',
