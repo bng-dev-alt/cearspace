@@ -10,9 +10,8 @@ interface StatsRowProps {
   onOpenIntelligence?: () => void;
 }
 
-// flex-basis + minWidth necháme dlaždice růst do řady na desktopu a zalomit
-// (2x2) na úzkých obrazovkách místo přeplácnutí textu.
-const FILL: React.CSSProperties = { flex: '1 1 150px', minWidth: '150px' };
+// Rozměry dlaždic řeší CSS (.app-stats-row > .cs-metric), aby se daly
+// přepsat na breakpointech (desktop 4 v řadě, tablet/mobil 2x2).
 
 function StatsRow({ totalTasks, inProgressCount, completedCount, blockedCount, onOpenIntelligence }: StatsRowProps) {
   // "Chytrá" dlaždice: když jsou blokátory, Blokováno nese mikro-akci a otevře Project Intelligence.
@@ -20,11 +19,10 @@ function StatsRow({ totalTasks, inProgressCount, completedCount, blockedCount, o
 
   return (
     <section className="app-stats-row">
-      <MetricCard style={FILL} icon={<Layers size={18} />} label="Celkem úkolů" value={totalTasks} />
-      <MetricCard style={FILL} icon={<Clock size={18} />} label="V průběhu" value={inProgressCount} />
-      <MetricCard style={FILL} icon={<CheckCircle2 size={18} />} label="Dokončeno" value={completedCount} />
+      <MetricCard icon={<Layers size={18} />} label="Celkem úkolů" value={totalTasks} />
+      <MetricCard icon={<Clock size={18} />} label="V průběhu" value={inProgressCount} />
+      <MetricCard icon={<CheckCircle2 size={18} />} label="Dokončeno" value={completedCount} />
       <MetricCard
-        style={FILL}
         icon={<AlertOctagon size={18} />}
         label="Blokováno"
         value={blockedCount}

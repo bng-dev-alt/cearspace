@@ -482,9 +482,14 @@ body {
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-  padding: 0.55rem 1.25rem;
+  /* Hodnoty převzaté z původních inline stylů (desktop beze změny),
+     přesunuté do CSS, aby šly přepsat na breakpointech. */
+  padding: 0.75rem 1.25rem;
   margin: 0 var(--page-pad) 1.5rem var(--page-pad);
   display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 8px rgba(0,0,0,0.015);
@@ -495,11 +500,26 @@ body {
   width: calc(100% - var(--page-pad) * 2);
 }
 
+/* Hlavní řada toolbaru (dřív inline styl) */
+.toolbar-main-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
 .toolbar-left,
 .toolbar-right {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+}
+
+.toolbar-left {
+  flex: 1;
+  flex-wrap: wrap;
 }
 
 .toolbar-search-wrapper {
@@ -825,6 +845,13 @@ body {
 }
 
 /* 3. Statistics Cards Panel */
+/* Rozměry metrikových dlaždic (dřív inline styl ve StatsRow).
+   Desktop: 4 v řadě. Tablet/mobil: přesně 2 v řadě (viz breakpointy níže). */
+.app-stats-row > .cs-metric {
+  flex: 1 1 150px;
+  min-width: 150px;
+}
+
 .app-stats-row {
   display: flex;
   flex-wrap: wrap;
@@ -2929,4 +2956,38 @@ body {
 /* Kanban karty o odstín světlejší/tmavší, ať vyniknou nad sloupcem */
 .card {
   background-color: var(--glass-bg-2);
+}
+
+/* ============================================================
+   RESPONSIVE OVERRIDES
+   Komponentní responzivní pravidla musí být AŽ ZA základními
+   pravidly -- při stejné specificitě rozhoduje pořadí v souboru.
+   (Token --page-pad je nahoře, ten kolizi nemá.)
+   ============================================================ */
+
+/* ---------- Tablet (<= 1023px) ---------- */
+@media (max-width: 1023px) {
+  /* Toolbar: místo roztrhaných řad filtry nahoře a akce zarovnané
+     doprava pod nimi. Popisek "Členové projektu" skryjeme -- avatary
+     zůstávají a jsou klikatelné, takže funkce zůstává dostupná. */
+  .toolbar-main-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .toolbar-right { justify-content: flex-end; }
+  .toolbar-team-label { display: none; }
+
+  /* Stats: přesně 2 v řadě (4 vedle sebe se text překrýval). */
+  .app-stats-row > .cs-metric {
+    flex: 1 1 calc(50% - 0.5rem);
+    min-width: 0;
+  }
+}
+
+/* ---------- Pouze tablet (768-1023) ----------
+   Rozsah, ne "max-width: 1023px" -- mobilní pravidla pro tyto vlastnosti
+   jsou v souboru výš, prostý max-width by je zde přebil. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Hero: desktopový titulek (3.25rem) se na tabletu lámal do 3 řádků. */
+  .hero-title { font-size: 2.6rem; }
 }

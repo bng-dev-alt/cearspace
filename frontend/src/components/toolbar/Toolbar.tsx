@@ -85,10 +85,10 @@ export default function Toolbar({
   };
 
   return (
-    <section className="app-toolbar" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch', gap: '0.75rem', padding: '0.75rem 1.25rem' }}>
-      {/* Hlavní řada (vždy viditelná) */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', gap: '1rem', flexWrap: 'wrap' }}>
-        <div className="toolbar-left" style={{ flexWrap: 'wrap', flex: 1 }}>
+    <section className="app-toolbar">
+      {/* Hlavní řada (vždy viditelná) -- layout řeší CSS, aby šel měnit na breakpointech */}
+      <div className="toolbar-main-row">
+        <div className="toolbar-left">
           <div className="toolbar-search-wrapper">
             <Search size={16} className="search-icon" />
             <input
@@ -210,6 +210,7 @@ export default function Toolbar({
             <button
               type="button"
               onClick={onManageTeam}
+              className="toolbar-team-label"
               style={{
                 background: 'none',
                 border: 'none',
