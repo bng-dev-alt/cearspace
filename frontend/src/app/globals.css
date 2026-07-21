@@ -3113,3 +3113,41 @@ body {
   /* Přepínač Board/Kalendář je v menu. */
   .board-view-switch-row { display: none; }
 }
+
+/* ---------- R4: mobilní layout (<= 767px) ----------
+   Cíl: dostat board nad ohyb. Před R4 zabraly hero + toolbar + stats
+   605px z 812px výšky, takže uživatel začínal u prázdna. */
+@media (max-width: 767px) {
+  /* Hero: kompaktní, titulek 1.85rem (~30px, limit zadání je 32px). */
+  .app-hero { padding: 1.5rem 1rem 1.25rem 1rem; }
+  .hero-content { gap: 1rem; }
+  .hero-title { font-size: 1.85rem; line-height: 1.12; }
+  /* Karty hero se z pevných 185px stanou půlkami řádku -- text se láme
+     méně, karta je nižší. Obsah zůstává celý. */
+  .hero-double-cards { gap: 0.6rem; width: 100%; }
+  .hero-info-card { width: auto; flex: 1 1 0; min-width: 0; padding: 0.85rem 0.9rem; }
+  .info-card-huge { font-size: 1.75rem; }
+
+  /* Toolbar: display: contents zapojí děti obou skupin do jednoho wrapu,
+     takže ovládání teče do dvou plných řad místo tří skoro prázdných. */
+  .app-toolbar { padding: 0.6rem 0.75rem; gap: 0.5rem; }
+  /* flex-start, ne space-between: po rozpuštění skupin (display: contents)
+     by ovládání odletělo na oba kraje řady a mezi ně by zbyla díra. */
+  .toolbar-main-row { flex-direction: row; align-items: center; gap: 0.5rem; justify-content: flex-start; }
+  .toolbar-left,
+  .toolbar-right { display: contents; }
+  .toolbar-search-wrapper { flex: 1 1 140px; }
+  .toolbar-search-input { width: 100%; }
+  .toolbar-sort-wrapper { min-width: 0; }
+  .toolbar-select { padding-left: 0.6rem; padding-right: 1.6rem; }
+  .toolbar-divider { display: none; }
+
+  /* Stats: 2x2 s těsnějšími rozestupy (dlaždice samotné viz design-system.css). */
+  .app-stats-row { gap: 0.65rem; padding-bottom: 1rem; }
+  .app-stats-row > .cs-metric { flex: 1 1 calc(50% - 0.35rem); }
+
+  /* Sloupce: pevná šířka místo roztahování -- je vidět kus dalšího sloupce
+     (peek), takže je zřejmé, že se scrolluje do strany. */
+  .column { flex: 0 0 280px; min-width: 280px; scroll-snap-align: start; }
+  .board-container { scroll-snap-type: x proximity; }
+}

@@ -224,3 +224,16 @@ textarea.cs-input { resize: vertical; min-height: 90px; line-height: 1.5; }
   .cs-modal-overlay, .cs-modal { animation: none; }
   .cs-btn:hover, .cs-card--interactive:hover, .cs-metric--interactive:hover { transform: none; }
 }
+
+/* --- Metrikové dlaždice na mobilu ---
+   Na 375px se popisky lámaly přes ikonu ("V PRŮBĚH...", těsné "BLOKOVÁNO").
+   Kompaktnější dlaždice + skrytý dekorativní chevron (aria-hidden) uvolní
+   místo pro celý popisek. Akční prvek "Vyřešit" zůstává. */
+@media (max-width: 767px) {
+  .cs-metric { padding: 0.7rem 0.8rem; gap: 0.6rem; }
+  .cs-metric-icon { width: 34px; height: 34px; }
+  .cs-metric-trail { display: none; }
+  .cs-metric-label { font-size: 0.58rem; letter-spacing: 0.04em; line-height: 1.3; }
+  .cs-metric-value { font-size: 1.3rem; }
+  .cs-metric-action { font-size: 0.68rem; }
+}

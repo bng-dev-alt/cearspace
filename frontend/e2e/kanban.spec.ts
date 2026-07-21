@@ -156,6 +156,14 @@ test.describe('Clearspace mobilní navigace', () => {
     await expect(page.getByTestId('project-intelligence-drawer')).toBeVisible();
   });
 
+  test('sloupce mají na mobilu pevnou šířku a je vidět kus dalšího', async ({ page }) => {
+    const box = await page.locator('.column').first().boundingBox();
+    const container = await page.locator('.board-container').boundingBox();
+    expect(box!.width).toBeCloseTo(280, 0);
+    // Peek: sloupec je užší než kontejner, takže je zřejmé, že se scrolluje do strany.
+    expect(container!.width).toBeGreaterThan(box!.width + 20);
+  });
+
   test('stránka na 375px vodorovně nepřetéká', async ({ page }) => {
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth
