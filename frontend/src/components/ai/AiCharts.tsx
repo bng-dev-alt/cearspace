@@ -47,7 +47,7 @@ export default function AiCharts({ logs, featureBreakdown }: AiChartsProps) {
   const totalFeatureRequests = featureBreakdown.reduce((sum, f) => sum + f.requestCount, 0);
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1rem', width: '100%' }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: '1rem', width: '100%' }}>
 
       {/* Chart 1: Daily Requests & Cost */}
       <div className="cs-card" style={CARD_STYLE}>

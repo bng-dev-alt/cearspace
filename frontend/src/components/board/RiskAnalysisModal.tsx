@@ -343,7 +343,7 @@ export default function RiskAnalysisModal({ isOpen, onClose, projectName, column
               </div>
 
               {/* Risk Categories Grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))', gap: '1.5rem' }}>
                 
                 {/* Bottlenecks */}
                 <div style={{ backgroundColor: 'var(--surface)', border: '1px solid var(--border-color)', borderRadius: '10px', padding: '1rem 1.25rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>

@@ -2791,7 +2791,9 @@ body {
   font-size: 0.9rem;
   color: var(--text-secondary);
 }
-.team-toolbar-actions { display: flex; align-items: center; gap: 0.75rem; }
+/* wrap: na úzkých displejích se hledání a tlačítko nevejdou vedle sebe.
+   Na desktopu je místa dost, takže se nic nezalomí. */
+.team-toolbar-actions { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; min-width: 0; }
 .team-search {
   display: flex;
   align-items: center;
@@ -3397,4 +3399,18 @@ body {
   .ai-budget-edit-btn { width: 44px; height: 44px; justify-content: center; }
   .project-delete-btn { width: 44px; height: 44px; }
   .toolbar-btn { min-height: 44px; }
+}
+
+/* ---------- R8: polish ---------- */
+@media (max-width: 767px) {
+  /* Dialog je na mobilu přes celou obrazovku -- scaleIn pak zoomuje celou
+     plochu, což působí lacině. Nativnější je vyjet zespodu. */
+  .modal-content { animation: modalSlideUp 0.24s cubic-bezier(0.16, 1, 0.3, 1); }
+}
+@keyframes modalSlideUp {
+  from { transform: translateY(16px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .modal-content { animation: none; }
 }

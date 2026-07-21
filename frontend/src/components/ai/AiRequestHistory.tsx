@@ -189,7 +189,7 @@ export default function AiRequestHistory({ history }: AiRequestHistoryProps) {
                           )}
 
                           {/* Columns for Request and Response */}
-                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(300px, 100%), 1fr))', gap: '1rem' }}>
                             <div>
                               <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--dark-navy)', marginBottom: '0.25rem' }}>
                                 Vstupní parametry (Request)

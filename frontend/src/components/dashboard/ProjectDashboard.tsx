@@ -196,7 +196,7 @@ export default function ProjectDashboard() {
       {/* Mřížka projektů */}
       <main style={{ padding: '0 3rem 3rem 3rem', maxWidth: '1600px', margin: '0 auto', width: '100%' }}>
         {/* Premium CTA Cards for Project Creation */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
           {/* Card 1: Classic Creation */}
           <div
             onClick={() => setIsModalOpen(true)}
@@ -282,7 +282,7 @@ export default function ProjectDashboard() {
             description="Zatím nemáte žádné projekty. Využijte možnosti výše pro vytvoření nového projektu."
           />
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(320px, 100%), 1fr))', gap: '1.5rem' }}>
             {projects.map((project) => (
               <div
                 key={project.id}
