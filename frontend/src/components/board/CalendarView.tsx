@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useMemo } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Column, Card } from '../../types/kanban';
 import { getPriorityColor } from '../../utils/kanban';
 
@@ -22,6 +22,8 @@ interface DatedCard {
 
 const WEEKDAYS = ['Po', 'Út', 'St', 'Čt', 'Pá', 'So', 'Ne'];
 const MAX_CARDS_PER_DAY = 3;
+/** Kolik teček se vejde do kompaktní mobilní buňky, než se přepne na "+N". */
+const MAX_DOTS_PER_DAY = 3;
 
 /** Lokální YYYY-MM-DD (ne UTC), aby seděl termín karty na správný den. */
 function localKey(d: Date): string {
@@ -78,6 +80,22 @@ export default function CalendarView({
   const todayKey = localKey(new Date());
   const monthLabel = month.toLocaleDateString('cs-CZ', { month: 'long', year: 'numeric' });
 
+  // Vybraný den pro mobilní rozbalení. Na desktopu se detail nezobrazuje
+  // (CSS) a tlačítko dne tam vůbec není, takže se sem nikdy nedostane.
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
+  // Po přelistování měsíce může vybraný den zmizet z mřížky -- neplatný výběr
+  // se prostě ignoruje, není potřeba ho čistit efektem.
+  const activeKey =
+    selectedKey && weeks.some((w) => w.some((d) => localKey(d) === selectedKey)) ? selectedKey : null;
+  const activeCards = activeKey ? cardsByDay.get(activeKey) || [] : [];
+  const activeLabel = activeKey
+    ? new Date(`${activeKey}T00:00:00`).toLocaleDateString('cs-CZ', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+      })
+    : '';
+
   return (
     <div className="calendar-panel">
       <div className="calendar-header">
@@ -118,9 +136,37 @@ export default function CalendarView({
               return (
                 <div
                   key={key}
-                  className={`calendar-day ${inMonth ? '' : 'is-outside'} ${isToday ? 'is-today' : ''}`}
+                  className={`calendar-day ${inMonth ? '' : 'is-outside'} ${isToday ? 'is-today' : ''} ${
+                    activeKey === key ? 'is-selected' : ''
+                  }`}
                 >
+                  {/* Dotyková vrstva přes celou buňku -- na desktopu display: none,
+                      takže tam kalendář zůstává čistě read-only jako dosud. */}
+                  <button
+                    type="button"
+                    className="calendar-day-tap"
+                    onClick={() => setSelectedKey(activeKey === key ? null : key)}
+                    aria-pressed={activeKey === key}
+                    aria-label={`${day.getDate()}. ${day.getMonth() + 1}. — ${dayCards.length} úkolů`}
+                    data-testid={`calendar-day-tap-${key}`}
+                  />
                   <span className="calendar-day-number">{day.getDate()}</span>
+                  {/* Kompaktní shrnutí pro mobil: tečky podle priority místo názvů,
+                      které se do ~49px buňky stejně nevejdou. */}
+                  {dayCards.length > 0 && (
+                    <span className="calendar-day-dots" aria-hidden="true">
+                      {dayCards.slice(0, MAX_DOTS_PER_DAY).map(({ card }) => (
+                        <span
+                          key={card.id}
+                          className="calendar-chip-dot"
+                          style={{ backgroundColor: getPriorityColor(card.priority) }}
+                        />
+                      ))}
+                      {dayCards.length > MAX_DOTS_PER_DAY && (
+                        <span className="calendar-dots-more">+{dayCards.length - MAX_DOTS_PER_DAY}</span>
+                      )}
+                    </span>
+                  )}
                   <div className="calendar-day-cards">
                     {shown.map(({ card, columnId }) => (
                       <button
@@ -148,6 +194,43 @@ export default function CalendarView({
           </div>
         ))}
       </div>
+
+      {/* Rozbalený den (jen mobil -- na desktopu je detail v buňkách samotných). */}
+      {activeKey && (
+        <div className="calendar-day-detail" data-testid="calendar-day-detail">
+          <div className="calendar-detail-head">
+            <span className="calendar-detail-date">{activeLabel}</span>
+            <button
+              type="button"
+              className="calendar-detail-close"
+              onClick={() => setSelectedKey(null)}
+              aria-label="Zavřít detail dne"
+              data-testid="calendar-detail-close"
+            >
+              <X size={16} />
+            </button>
+          </div>
+          {activeCards.length === 0 ? (
+            <p className="calendar-detail-empty">Na tento den nemá termín žádný úkol.</p>
+          ) : (
+            activeCards.map(({ card, columnId }) => (
+              <button
+                key={card.id}
+                type="button"
+                className="calendar-card-chip calendar-detail-chip"
+                onClick={() => onCardClick(columnId, card)}
+                data-testid={`calendar-detail-chip-${card.id}`}
+              >
+                <span
+                  className="calendar-chip-dot"
+                  style={{ backgroundColor: getPriorityColor(card.priority) }}
+                />
+                <span className="calendar-chip-title">{card.title}</span>
+              </button>
+            ))
+          )}
+        </div>
+      )}
 
       {undatedCount > 0 && (
         <div className="calendar-footer">

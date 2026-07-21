@@ -112,6 +112,16 @@ test.describe('Clearspace board E2E', () => {
     await expect(page.getByTestId('pi-actions')).toBeVisible();
   });
 
+  test('kalendář zůstává na desktopu read-only (dny nejsou klikací)', async ({ page }) => {
+    await page.getByTestId('view-switch-calendar').click();
+    await expect(page.getByTestId('calendar-grid')).toBeVisible();
+    // Mobilní dotyková vrstva ani tečky na desktopu neexistují v layoutu.
+    await expect(page.locator('.calendar-day-tap').first()).toBeHidden();
+    await expect(page.locator('.calendar-day-dots').first()).toBeHidden();
+    // Chipy s názvy zůstávají přímo v buňkách jako dosud.
+    await expect(page.locator('.calendar-day-cards .calendar-card-chip').first()).toBeVisible();
+  });
+
   test('Project Intelligence se otevře klávesovou zkratkou (Ctrl/Cmd+I)', async ({ page }) => {
     await expect(page.getByTestId('project-intelligence-drawer')).toHaveCount(0);
     const modifier = process.platform === 'darwin' ? 'Meta' : 'Control';
@@ -206,6 +216,29 @@ test.describe('Clearspace mobilní navigace', () => {
 
     const footer = await modal.locator('.modal-footer').boundingBox();
     expect(footer!.y + footer!.height).toBeGreaterThan(800);
+  });
+
+  test('kalendář je kompaktní: tečky místo názvů, klepnutí na den rozbalí seznam', async ({ page }) => {
+    await page.getByTestId('navbar-burger').click();
+    await page.getByTestId('mobile-menu-calendar').click();
+
+    const grid = page.getByTestId('calendar-grid');
+    await expect(grid).toBeVisible();
+    // Do ~49px buňky se název nevejde -> chipy jsou skryté, zůstávají tečky.
+    await expect(grid.locator('.calendar-day-cards').first()).toBeHidden();
+    await expect(grid.locator('.calendar-day-dots').first()).toBeVisible();
+
+    // Klepnutí na den s termínem rozbalí seznam pod mřížkou.
+    const day = grid.locator('.calendar-day', { has: page.locator('.calendar-day-dots') }).first();
+    await day.locator('.calendar-day-tap').click();
+
+    const detail = page.getByTestId('calendar-day-detail');
+    await expect(detail).toBeVisible();
+    await expect(detail.locator('.calendar-detail-chip')).not.toHaveCount(0);
+
+    // Karta ze seznamu otevře detail úkolu -- funkce zůstává dostupná.
+    await detail.locator('.calendar-detail-chip').first().click();
+    await expect(page.getByTestId('task-detail-drawer')).toBeVisible();
   });
 
   test('stránka na 375px vodorovně nepřetéká', async ({ page }) => {

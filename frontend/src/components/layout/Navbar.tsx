@@ -345,6 +345,7 @@ export default function Navbar({ boardActions }: NavbarProps) {
                     type="button"
                     className={`mobile-menu-item ${boardActions.viewMode === 'board' ? 'active' : ''}`}
                     onClick={() => runBoardAction(() => boardActions.onViewModeChange('board'))}
+                    data-testid="mobile-menu-board"
                   >
                     <LayoutGrid size={16} /> Board
                   </button>
@@ -352,6 +353,7 @@ export default function Navbar({ boardActions }: NavbarProps) {
                     type="button"
                     className={`mobile-menu-item ${boardActions.viewMode === 'calendar' ? 'active' : ''}`}
                     onClick={() => runBoardAction(() => boardActions.onViewModeChange('calendar'))}
+                    data-testid="mobile-menu-calendar"
                   >
                     <CalendarDays size={16} /> Kalendář
                   </button>
