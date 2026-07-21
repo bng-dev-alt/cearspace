@@ -111,6 +111,7 @@ export default function AiHistoryPage() {
             }}
             onMouseEnter={(e) => { if (history.length > 0) e.currentTarget.style.backgroundColor = 'var(--danger-soft)'; }}
             onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+            className="ai-cc-clear-logs"
           >
             <Trash2 size={14} />
             Vymazat historii

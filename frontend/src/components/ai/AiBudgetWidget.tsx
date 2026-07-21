@@ -81,6 +81,7 @@ export default function AiBudgetWidget({ monthlyUsage, budgetLimit, onBudgetChan
           </div>
         ) : (
           <button
+            className="ai-budget-edit-btn"
             onClick={() => setIsEditing(true)}
             style={{
               background: 'none',

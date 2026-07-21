@@ -161,6 +161,7 @@ export default function MultiAssigneeSelect({
                 color: 'var(--gray-text)',
               }}
               aria-label={`Odebrat ${member.fullName}`}
+              className="assignee-badge-remove"
               data-testid={`remove-badge-${member.id}`}
             >
               <X size={12} />

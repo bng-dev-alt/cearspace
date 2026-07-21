@@ -17,6 +17,7 @@ export default function HeroSection({ totalTasks, onClose, isCollapsed }: HeroSe
     <section className={`app-hero ${isCollapsed ? 'collapsed' : ''}`} style={{ position: 'relative' }}>
       <button
         type="button"
+        className="hide-hero-btn"
         onClick={onClose}
         style={{
           position: 'absolute',

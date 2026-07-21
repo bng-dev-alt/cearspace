@@ -42,7 +42,9 @@
   /* --- Text --- */
   --text: #101f33;
   --text-secondary: #5a6472;
-  --text-muted: #8a91a0;
+  /* A11y: #8a91a0 mělo na bílé jen 3.16:1 (AA vyžaduje 4.5). Nyní 4.99:1,
+     na --surface-2 4.54:1. Odstín zůstává, jen je tmavší. */
+  --text-muted: #68707e;
 
   /* --- Semantic states --- */
   --success: #0d9f6e;  --success-soft: rgba(13, 159, 110, 0.12);
@@ -122,7 +124,8 @@
 
   --text: #e8f2f4;
   --text-secondary: #9db4bd;
-  --text-muted: #6b8792;
+  /* A11y: #6b8792 mělo na --surface jen 4.02:1. Nyní 5.08:1. */
+  --text-muted: #7d99a4;
 
   --success: #34d399;  --success-soft: rgba(52, 211, 153, 0.14);
   --warning: #fbbf24;  --warning-soft: rgba(251, 191, 36, 0.14);
@@ -3305,4 +3308,93 @@ body {
     white-space: normal;
     overflow: visible;
   }
+}
+
+/* Grafy + rozpočet na stránce AI Studio. Hodnoty převzaté z původního
+   inline stylu (desktop beze změny), v CSS kvůli breakpointu. */
+.ai-cc-charts-grid {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 1.25rem;
+  align-items: start;
+}
+
+/* ---------- R7: dotykové cíle na mobilu (44x44) ----------
+   Naměřeno na 375px: 10 ovládacích prvků mělo pod 44px (nejmenší 24x24).
+   Ikonová tlačítka rostou na plných 44x44, formulářové prvky na 44 na výšku.
+   Toolbar tím zvýší o ~45px -- vědomá výměna hustoty za trefitelnost. */
+@media (max-width: 767px) {
+  .toolbar-settings-btn,
+  .hide-hero-btn,
+  .calendar-nav-btn,
+  .modal-close-btn,
+  .pi-icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .toolbar-search-input,
+  .toolbar-select,
+  .toolbar-filter-toggle-btn,
+  .calendar-today-btn {
+    min-height: 44px;
+  }
+
+  /* Logo je odkaz na úvod -- nízké písmo samo o sobě nestačí jako cíl. */
+  .navbar-logo {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  /* Ovládání boardu */
+  .column-header-plus { width: 44px; height: 44px; }
+  .column-add-card-btn { min-height: 44px; }
+
+  /* Mazání karty se odkrývá až na :hover, který na dotyku neexistuje --
+     tlačítko tedy zůstávalo neviditelné, ale reagovalo na klepnutí
+     (opacity: 0 nevypíná pointer-events). Neviditelný destruktivní cíl
+     v rohu karty je horší než žádný; mazání zůstává v detailu úkolu. */
+  .card-delete-btn { display: none; }
+
+  /* Panely a menu */
+  .mobile-menu .theme-toggle-btn { width: 44px; height: 44px; }
+  .calendar-detail-close { width: 44px; height: 44px; }
+  .pi-ask-send { min-height: 44px; }
+
+  /* Detail úkolu */
+  .drawer-header-right button { width: 44px; height: 44px; }
+  .drawer-title-input,
+  .drawer-select,
+  .drawer-date-input,
+  .multi-select-trigger-btn,
+  .checklist-add-input,
+  .checklist-add-submit,
+  .comment-add-submit,
+  .drawer-duedate-clear,
+  .drawer-activity-toggle,
+  .ai-improve-btn { min-height: 44px; }
+  /* Výjimka: "x" uvnitř jmenovky přiřazeného. Roztažení na 44px by rozbilo
+     chip; WCAG 2.5.8 (AA) pro takové inline ovládání připouští 24x24. */
+  .assignee-badge-remove { min-width: 24px; min-height: 24px; }
+
+  /* Formuláře v dialozích */
+  .form-input,
+  .form-select,
+  .btn { min-height: 44px; }
+
+  /* Stránka Tým */
+  .member-action-btn { width: 44px; height: 44px; }
+  /* Klepnutí musí trefit samotný input, ne jen orámování -- svislý padding
+     jde pryč a input se roztáhne přes celou výšku wrapperu. */
+  .team-search { padding-top: 0; padding-bottom: 0; }
+  .team-search input { align-self: stretch; min-height: 44px; }
+
+  /* WCAG 1.4.10 (Reflow): obsah nesmí nutit k vodorovnému scrollování.
+     Mřížka 3fr 1fr na 375px přetékala o 181px ven z obrazovky. */
+  .ai-cc-charts-grid { grid-template-columns: minmax(0, 1fr); }
+  .ai-cc-clear-logs { min-height: 44px; }
+  .ai-budget-edit-btn { width: 44px; height: 44px; justify-content: center; }
+  .project-delete-btn { width: 44px; height: 44px; }
+  .toolbar-btn { min-height: 44px; }
 }

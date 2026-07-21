@@ -241,6 +241,23 @@ test.describe('Clearspace mobilní navigace', () => {
     await expect(page.getByTestId('task-detail-drawer')).toBeVisible();
   });
 
+  test('všechny dotykové cíle na boardu mají aspoň 44x44', async ({ page }) => {
+    const small = await page.evaluate(() => {
+      const sel = 'button,a,select,input,[role="button"],textarea';
+      return [...document.querySelectorAll(sel)]
+        .filter((e) => {
+          const b = e.getBoundingClientRect();
+          return b.width > 0 && b.height > 0 && (b.width < 44 || b.height < 44);
+        })
+        .map((e) => {
+          const b = e.getBoundingClientRect();
+          const id = (e as HTMLElement).dataset.testid || e.className || e.tagName;
+          return `${id}|${Math.round(b.width)}x${Math.round(b.height)}`;
+        });
+    });
+    expect(small).toEqual([]);
+  });
+
   test('stránka na 375px vodorovně nepřetéká', async ({ page }) => {
     const overflow = await page.evaluate(
       () => document.documentElement.scrollWidth - document.documentElement.clientWidth

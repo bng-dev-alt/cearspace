@@ -311,6 +311,7 @@ export default function ProjectDashboard() {
                     {project.id !== 'project-default' && (
                       <button
                         type="button"
+                        className="project-delete-btn"
                         onClick={(e) => handleDeleteClick(e, project)}
                         style={{
                           background: 'none',

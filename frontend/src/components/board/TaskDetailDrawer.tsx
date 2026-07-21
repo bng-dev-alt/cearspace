@@ -600,7 +600,8 @@ export default function TaskDetailDrawer({
                     cursor: 'pointer',
                     textDecoration: 'underline',
                   }}
-                  data-testid="drawer-duedate-clear"
+                  className="drawer-duedate-clear"
+              data-testid="drawer-duedate-clear"
                 >
                   Vymazat
                 </button>
@@ -722,7 +723,8 @@ export default function TaskDetailDrawer({
                 }}
                 onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--border-color)')}
                 onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'var(--bg-column)')}
-                data-testid="checklist-add-submit"
+                className="checklist-add-submit"
+              data-testid="checklist-add-submit"
               >
                 Přidat
               </button>
@@ -780,7 +782,8 @@ export default function TaskDetailDrawer({
                   cursor: newCommentText.trim() ? 'pointer' : 'not-allowed',
                   transition: 'var(--spring-transition)',
                 }}
-                data-testid="comment-add-submit"
+                className="comment-add-submit"
+              data-testid="comment-add-submit"
               >
                 Odeslat
               </button>
@@ -805,6 +808,7 @@ export default function TaskDetailDrawer({
                 padding: '0.25rem 0',
                 outline: 'none',
               }}
+              className="drawer-activity-toggle"
               data-testid="drawer-activity-toggle"
             >
               <h3 className="drawer-section-title" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', margin: 0 }}>

@@ -138,6 +138,7 @@ export default function AiControlCenterPage() {
             onMouseLeave={(e) => {
               e.currentTarget.style.backgroundColor = 'transparent';
             }}
+            className="ai-cc-clear-logs"
           >
             <Trash2 size={14} />
             Vymazat logy
@@ -148,12 +149,9 @@ export default function AiControlCenterPage() {
         <AiDashboardStats stats={stats} />
 
         {/* 2. Charts and Budget row */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '3fr 1fr',
-          gap: '1.25rem',
-          alignItems: 'start',
-        }}>
+        {/* Layout v CSS (dřív inline), aby se dal na mobilu složit do jednoho
+            sloupce -- na 375px mřížka přetékala ven z obrazovky. */}
+        <div className="ai-cc-charts-grid">
           <div style={{ gridColumn: 'span 1' }}>
             <AiCharts logs={history} featureBreakdown={featureBreakdown} />
           </div>
