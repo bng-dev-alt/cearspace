@@ -11,10 +11,13 @@
   color-scheme: light;
 
   /* --- Brand / Accent (muted emerald -- Design Bible) --- */
-  --accent: #0f9d6e;
-  --accent-hover: #0b8459;
-  --accent-soft: rgba(15, 157, 110, 0.10);
-  --accent-ring: rgba(15, 157, 110, 0.30);
+  /* A11y: #0f9d6e mělo na bílé 3.46:1 -- jako text propadalo AA (4.5).
+     Ztmaveno na 5.14:1; bílý text na výplni tlačítka tím taky získal.
+     Tmavý motiv zůstává (#34c98a tam má 7.20:1). */
+  --accent: #0b7d57;
+  --accent-hover: #096644;
+  --accent-soft: rgba(11, 125, 87, 0.10);
+  --accent-ring: rgba(11, 125, 87, 0.30);
   --accent-yellow: #d99a0b;
   --text-on-accent: #ffffff;
 
@@ -49,7 +52,8 @@
   /* --- Semantic states --- */
   --success: #0d9f6e;  --success-soft: rgba(13, 159, 110, 0.12);
   --warning: #d99a0b;  --warning-soft: rgba(217, 154, 11, 0.14);
-  --danger: #e5484d;   --danger-soft: rgba(229, 72, 77, 0.11);
+  /* A11y: #e5484d mělo na bílé 3.91:1. Nyní 4.93:1. */
+  --danger: #d13438;   --danger-soft: rgba(209, 52, 56, 0.11);
 
   /* --- Elevation --- */
   --shadow-sm: 0 1px 2px rgba(16, 31, 51, 0.06), 0 1px 3px rgba(16, 31, 51, 0.04);

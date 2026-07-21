@@ -147,7 +147,12 @@ export default function ProjectBoardPage() {
       setIsHydrated(true);
     }, 0);
     if (typeof window !== 'undefined') {
-      const hidden = localStorage.getItem('hide_hero_section') === 'true';
+      // Na mobilu je hero výchozí sbalené -- jinak board začíná až pod ohybem.
+      // Jakmile si uživatel jednou zvolí, jeho volba má přednost na všech
+      // šířkách (proto se testuje na null, ne na 'false').
+      const stored = localStorage.getItem('hide_hero_section');
+      const hidden =
+        stored === null ? window.matchMedia('(max-width: 767px)').matches : stored === 'true';
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsHeroHidden(hidden);
       const storedView = localStorage.getItem('board_view_mode');

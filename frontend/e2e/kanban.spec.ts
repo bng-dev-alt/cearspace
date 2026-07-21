@@ -112,6 +112,11 @@ test.describe('Clearspace board E2E', () => {
     await expect(page.getByTestId('pi-actions')).toBeVisible();
   });
 
+  test('hero zůstává na desktopu výchozí rozbalené', async ({ page }) => {
+    await expect(page.locator('.app-hero')).not.toHaveClass(/collapsed/);
+    await expect(page.locator('.hero-title')).toBeVisible();
+  });
+
   test('kalendář zůstává na desktopu read-only (dny nejsou klikací)', async ({ page }) => {
     await page.getByTestId('view-switch-calendar').click();
     await expect(page.getByTestId('calendar-grid')).toBeVisible();
@@ -256,6 +261,27 @@ test.describe('Clearspace mobilní navigace', () => {
         });
     });
     expect(small).toEqual([]);
+  });
+
+  test('hero je na mobilu výchozí sbalené, ale volba uživatele má přednost', async ({ page }) => {
+    // Bez uložené volby -> sbalené, board začíná výš.
+    // (Sbalení jede přes opacity/0fr, takže se testuje stavová třída.)
+    await expect(page.locator('.app-hero')).toHaveClass(/collapsed/);
+    const collapsedTop = await page.locator('.board-container').evaluate(
+      (el) => Math.round(el.getBoundingClientRect().top + window.scrollY)
+    );
+
+    // Rozbalení se uloží...
+    await page.getByTestId('toolbar-toggle-hero-btn').click();
+    await expect(page.locator('.app-hero')).not.toHaveClass(/collapsed/);
+    const expandedTop = await page.locator('.board-container').evaluate(
+      (el) => Math.round(el.getBoundingClientRect().top + window.scrollY)
+    );
+    expect(expandedTop).toBeGreaterThan(collapsedTop);
+
+    // ...a přežije reload, tedy mobilní výchozí stav ji nepřebije.
+    await page.reload();
+    await expect(page.locator('.app-hero')).not.toHaveClass(/collapsed/);
   });
 
   test('stránka na 375px vodorovně nepřetéká', async ({ page }) => {
