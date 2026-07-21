@@ -242,7 +242,7 @@ export default function RegisterPage() {
                   style={{
                     width: '100%',
                     padding: '0.65rem 1rem 0.65rem 2.5rem',
-                    fontSize: '0.85rem',
+                    fontSize: 'var(--auth-input-font)',
                     fontWeight: 500,
                     borderRadius: '8px',
                     border: '1px solid var(--border-color)',
@@ -295,7 +295,7 @@ export default function RegisterPage() {
                   style={{
                     width: '100%',
                     padding: '0.65rem 1rem 0.65rem 2.5rem',
-                    fontSize: '0.85rem',
+                    fontSize: 'var(--auth-input-font)',
                     fontWeight: 500,
                     borderRadius: '8px',
                     border: '1px solid var(--border-color)',
@@ -348,7 +348,7 @@ export default function RegisterPage() {
                   style={{
                     width: '100%',
                     padding: '0.65rem 1rem 0.65rem 2.5rem',
-                    fontSize: '0.85rem',
+                    fontSize: 'var(--auth-input-font)',
                     fontWeight: 500,
                     borderRadius: '8px',
                     border: '1px solid var(--border-color)',
@@ -401,7 +401,7 @@ export default function RegisterPage() {
                   style={{
                     width: '100%',
                     padding: '0.65rem 1rem 0.65rem 2.5rem',
-                    fontSize: '0.85rem',
+                    fontSize: 'var(--auth-input-font)',
                     fontWeight: 500,
                     borderRadius: '8px',
                     border: '1px solid var(--border-color)',

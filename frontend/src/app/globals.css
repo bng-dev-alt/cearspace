@@ -20,6 +20,9 @@
   --accent-ring: rgba(11, 125, 87, 0.30);
   --accent-yellow: #d99a0b;
   --text-on-accent: #ffffff;
+  /* Písmo přihlašovacích polí. Je tokenem, protože ta pole mají styl inline
+     (media query by na inline hodnotu nedosáhla) -- viz breakpoint níž. */
+  --auth-input-font: 0.85rem;
 
   /* --- Surfaces --- */
   --bg-page: #fbfaf8;         /* warm off-white app background */
@@ -161,6 +164,8 @@
 }
 @media (max-width: 767px) {
   :root { --page-pad: 1rem; }
+  /* 16px = práh, pod kterým iOS Safari při klepnutí do pole zoomne stránku. */
+  :root { --auth-input-font: 16px; }
 }
 
 * {
@@ -189,6 +194,9 @@ a, button, input, select, textarea, [role="button"], [tabindex] {
 
 html {
   height: 100%;
+  /* iOS Safari jinak v některých situacích samo nafukuje písmo a rozhodí layout. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -3417,4 +3425,34 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   .modal-content { animation: none; }
+}
+
+/* ---------- R10: iOS auto-zoom na formulářových polích ----------
+   Safari na iPhonu automaticky zoomne stránku, když uživatel klepne do
+   pole s písmem menším než 16px -- a po rozostření zoom NEVRÁTÍ zpět.
+   Od té chvíle je layout širší než displej a jde s ním jezdit do stran.
+   V Chromiu se to neprojeví, proto to emulace nikdy neodhalila.
+
+   Řešení je 16px na všech polích. Alternativa "maximum-scale=1,
+   user-scalable=no" ve viewport meta by sice zoom vypnula taky, ale
+   zároveň by uživateli sebrala možnost si stránku přiblížit prsty
+   (porušení WCAG 1.4.4) -- proto tudy ne. */
+@media (max-width: 767px) {
+  .toolbar-search-input,
+  .toolbar-select,
+  .form-input,
+  .form-textarea,
+  .drawer-select,
+  .drawer-date-input,
+  .drawer-desc-textarea,
+  .checklist-add-input,
+  .checklist-text-input,
+  .comment-textarea,
+  .pi-ask-input,
+  .tag-add-input,
+  .column-title-input,
+  .team-search input,
+  .auth-input {
+    font-size: 16px;
+  }
 }
