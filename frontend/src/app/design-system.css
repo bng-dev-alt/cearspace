@@ -237,3 +237,21 @@ textarea.cs-input { resize: vertical; min-height: 90px; line-height: 1.5; }
   .cs-metric-value { font-size: 1.3rem; }
   .cs-metric-action { font-size: 0.68rem; }
 }
+
+/* --- Dialogy na mobilu: fullscreen, scrolluje jen tělo --- */
+@media (max-width: 767px) {
+  .cs-modal-overlay { align-items: stretch; justify-content: stretch; padding: 0; }
+  .cs-modal {
+    width: 100%;
+    max-width: none;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
+    border: none;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .cs-modal-header { flex: none; }
+  .cs-modal-body { flex: 1 1 auto; }
+}

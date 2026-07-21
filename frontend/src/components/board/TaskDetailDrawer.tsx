@@ -358,18 +358,9 @@ export default function TaskDetailDrawer({
             </span>
           </div>
           
-          {/* View Mode Switcher */}
-          <div 
-            style={{
-              display: 'flex',
-              backgroundColor: 'var(--surface-2)',
-              padding: '2px',
-              borderRadius: '8px',
-              gap: '2px',
-              alignItems: 'center',
-            }}
-            data-testid="mode-switcher"
-          >
+          {/* View Mode Switcher -- layout v CSS (dřív inline), aby na něj dosáhly
+              breakpointy; na mobilu je drawer vždy fullscreen, takže se skrývá. */}
+          <div className="drawer-mode-switch" data-testid="mode-switcher">
             <button
               type="button"
               onClick={() => handleModeChange('left')}

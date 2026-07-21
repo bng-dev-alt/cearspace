@@ -1775,7 +1775,10 @@ body {
 }
 
 /* Pozicovací bar (stejný jazyk jako task-detail switcher) */
-.pi-mode-switch {
+/* Pozicovací bar draweru. Hodnoty převzaté z původních inline stylů
+   v TaskDetailDrawer (desktop beze změny), sdílené s PI panelem. */
+.pi-mode-switch,
+.drawer-mode-switch {
   display: flex;
   align-items: center;
   gap: 2px;
@@ -3150,4 +3153,71 @@ body {
      (peek), takže je zřejmé, že se scrolluje do strany. */
   .column { flex: 0 0 280px; min-width: 280px; scroll-snap-align: start; }
   .board-container { scroll-snap-type: x proximity; }
+}
+
+/* ---------- R5: dialogy a drawery na mobilu (<= 767px) ---------- */
+@media (max-width: 767px) {
+  /* Drawer je na mobilu vždy přes celou obrazovku, takže pozicovací bar
+     (Left / Focused / Right) nemá co ovlivňovat -- jen přetékal hlavičku
+     a vytlačoval z ní křížek. Preference pro desktop zůstává uložená. */
+  .drawer-mode-switch,
+  .pi-mode-switch { display: none; }
+
+  .drawer-header { padding: 1rem 1.1rem; gap: 0.5rem; }
+  .drawer-scroll-area { padding: 1.1rem; gap: 1.25rem; }
+
+  /* Sklo dává smysl u úzkého panelu na desktopu. Přes celou obrazovku pod
+     ním leží celý board a text se s ním pere -- na mobilu tedy plná plocha. */
+  .drawer-content,
+  .modal-content {
+    background-color: var(--surface);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  /* dvh místo 100%: na mobilu se s vysunutou adresní lištou počítá
+     výška fixed prvku k velkému viewportu a patička by zmizela pod ním. */
+  .drawer-content.mode-right,
+  .drawer-content.mode-left,
+  .drawer-content.mode-focused { height: 100dvh !important; }
+
+  /* Meta grid detailu úkolu má na desktopu sloupce "140px 1fr". Na 375 px
+     ho min-content obsahu (datum + Vymazat, jmenovky) roztlačil za okraj,
+     takže se ovládání ořezávalo. Na mobilu jde label nad hodnotu -- pole
+     dostanou celou šířku a nic se neztrácí. */
+  .drawer-meta-grid {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0.35rem;
+    padding: 1rem;
+  }
+  .drawer-meta-label:not(:first-of-type) { margin-top: 0.9rem; }
+  .drawer-title-input { font-size: 1.35rem; }
+
+  /* Modaly přes celou obrazovku: hlavička a patička drží na místě,
+     scrolluje jen tělo. */
+  .modal-overlay { align-items: stretch; justify-content: stretch; }
+  .modal-content {
+    width: 100%;
+    max-width: none;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
+    border: none;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    /* Pojistka pro dialogy bez .modal-body -- ať se nedá obsah uříznout. */
+    overflow-y: auto;
+  }
+  .modal-header,
+  .modal-footer { flex: none; }
+  .modal-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  /* Většina dialogů má mezi hlavičkou a patičkou <form>. Ten musí táhnout
+     výšku, jinak patička nedosedne ke spodní hraně a zůstane pod ní díra. */
+  .modal-content > form {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
 }

@@ -24,6 +24,13 @@ async function seedAuth(page: Page) {
   }, MOCK_UID);
 }
 
+/** Počká, až doběhnou vstupní animace prvku -- jinak se měří rozměry uprostřed scaleIn. */
+async function settled(page: Page, selector: string) {
+  await page.locator(selector).evaluate((el) =>
+    Promise.all(el.getAnimations({ subtree: true }).map((a) => a.finished.catch(() => {})))
+  );
+}
+
 test.describe('Clearspace board E2E', () => {
   test.beforeEach(async ({ page }) => {
     page.on('pageerror', (err) => console.log('BROWSER ERROR:', err.message));
@@ -162,6 +169,43 @@ test.describe('Clearspace mobilní navigace', () => {
     expect(box!.width).toBeCloseTo(280, 0);
     // Peek: sloupec je užší než kontejner, takže je zřejmé, že se scrolluje do strany.
     expect(container!.width).toBeGreaterThan(box!.width + 20);
+  });
+
+  test('drawer je na mobilu fullscreen bez pozicovacího baru a s dostupným křížkem', async ({ page }) => {
+    await page.getByTestId('navbar-burger').click();
+    await page.getByTestId('mobile-menu-intelligence').click();
+
+    const drawer = page.getByTestId('project-intelligence-drawer');
+    await expect(drawer).toBeVisible();
+    // Pozicovací bar nemá na fullscreenu co ovlivňovat -> skrytý.
+    await expect(page.getByTestId('pi-mode-switcher')).toBeHidden();
+
+    // Panel vyplní šířku a křížek je uvnitř viewportu (dřív ho bar vytlačil ven).
+    await settled(page, '[data-testid="project-intelligence-drawer"]');
+    const box = await drawer.boundingBox();
+    expect(box!.width).toBe(375);
+    const close = await page.getByTestId('pi-close-btn').boundingBox();
+    expect(close!.x + close!.width).toBeLessThanOrEqual(375);
+
+    // Obsah se vejde bez vodorovného scrollu.
+    const inner = await drawer.locator('.drawer-scroll-area').evaluate(
+      (el) => el.scrollWidth - el.clientWidth
+    );
+    expect(inner).toBeLessThanOrEqual(0);
+  });
+
+  test('dialog je na mobilu fullscreen a patička dosedne ke spodní hraně', async ({ page }) => {
+    await page.getByTestId('navbar-burger').click();
+    await page.getByTestId('mobile-menu-new-task').click();
+
+    const modal = page.locator('.modal-content');
+    await expect(modal).toBeVisible();
+    await settled(page, '.modal-content');
+    const box = await modal.boundingBox();
+    expect(box!.width).toBe(375);
+
+    const footer = await modal.locator('.modal-footer').boundingBox();
+    expect(footer!.y + footer!.height).toBeGreaterThan(800);
   });
 
   test('stránka na 375px vodorovně nepřetéká', async ({ page }) => {
