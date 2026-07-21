@@ -239,6 +239,15 @@ body {
   align-items: center;
 }
 
+/* Dřív inline styl na elementu -- přesunuto sem beze změny hodnot,
+   aby se dalo na mobilu skrýt media query. */
+.navbar-right {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .nav-link {
   font-size: 0.85rem;
   font-weight: 500;
@@ -2990,4 +2999,117 @@ body {
 @media (min-width: 768px) and (max-width: 1023px) {
   /* Hero: desktopový titulek (3.25rem) se na tabletu lámal do 3 řádků. */
   .hero-title { font-size: 2.6rem; }
+}
+
+/* ---------- Mobilní navigace (hamburger) ---------- */
+/* Základ: na desktopu i tabletu skryté. Panel se renderuje jen když je otevřený. */
+.navbar-burger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;              /* touch target dle a11y */
+  height: 44px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+  transition: var(--transition-base);
+}
+.navbar-burger:hover { border-color: var(--accent); color: var(--accent); }
+
+.mobile-menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 300;
+  display: flex;
+  justify-content: flex-end;
+  animation: csFadeIn var(--dur-base) var(--ease-out);
+}
+.mobile-menu {
+  width: min(330px, 86vw);
+  height: 100%;
+  overflow-y: auto;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  padding: 1rem 1.1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  animation: mobileMenuIn var(--dur-base) var(--ease-out);
+}
+@keyframes mobileMenuIn { from { transform: translateX(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu, .mobile-menu-overlay { animation: none; }
+}
+
+.mobile-menu-head { display: flex; align-items: center; justify-content: space-between; }
+.mobile-menu-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: var(--radius-md);
+}
+.mobile-menu-close:hover { color: var(--text); background: var(--surface-2); }
+
+.mobile-menu-section { display: flex; flex-direction: column; gap: 0.25rem; }
+.mobile-menu-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 0 0.15rem 0.35rem;
+}
+.mobile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;          /* touch target */
+  padding: 0.6rem 0.7rem;
+  border: none;
+  background: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  cursor: pointer;
+  text-align: left;
+  transition: var(--transition-base);
+}
+.mobile-menu-item:hover { background: var(--surface-2); }
+.mobile-menu-item.active { background: var(--accent-soft); color: var(--accent); }
+.mobile-menu-item.is-danger { color: var(--danger); }
+.mobile-menu-item.is-danger:hover { background: var(--danger-soft); }
+.mobile-menu-name { font-size: 0.9rem; font-weight: 700; color: var(--text); padding: 0 0.15rem; }
+.mobile-menu-email { font-size: 0.75rem; color: var(--text-secondary); padding: 0 0.15rem 0.4rem; word-break: break-all; }
+/* Přepínač motivu v menu: větší, aby se dal pohodlně trefit prstem */
+.mobile-menu .theme-toggle-btn { width: 40px; height: 40px; }
+
+/* ---------- Mobil (<= 767px) ---------- */
+@media (max-width: 767px) {
+  /* Navbar = logo + hamburger. Navigace, motiv i profil žijí v menu. */
+  .navbar-center,
+  .navbar-right { display: none; }
+  .navbar-burger { display: inline-flex; }
+
+  /* Akce přesunuté do menu zmizí z toolbaru (řeší i jeho přetékání).
+     Nastavení a přepínač hero zůstávají -- žádná funkce se neztrácí. */
+  .pi-chip-btn,
+  .toolbar-new-task-btn { display: none; }
+
+  /* Přepínač Board/Kalendář je v menu. */
+  .board-view-switch-row { display: none; }
 }

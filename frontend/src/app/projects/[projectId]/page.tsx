@@ -418,7 +418,15 @@ export default function ProjectBoardPage() {
 
   return (
     <div className="app-container" data-hydrated={isHydrated ? 'true' : 'false'}>
-      <Navbar />
+      {/* Board akce se na mobilu objeví v hamburger menu (na desktopu zůstávají v toolbaru). */}
+      <Navbar
+        boardActions={{
+          onOpenIntelligence: () => setIsIntelligenceOpen(true),
+          onNewTask: handleOpenGeneralAddModal,
+          viewMode,
+          onViewModeChange: changeViewMode,
+        }}
+      />
       <HeroSection
         totalTasks={totalTasks}
         onClose={() => {

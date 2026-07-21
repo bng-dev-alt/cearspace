@@ -112,3 +112,54 @@ test.describe('Clearspace board E2E', () => {
     await expect(page.getByTestId('project-intelligence-drawer')).toBeVisible();
   });
 });
+
+/**
+ * Mobilní navigace (<= 767px). Desktopové akce se přesouvají do hamburger menu,
+ * takže testujeme, že jsou odtamtud stále dostupné a že se nic neztratilo.
+ */
+test.describe('Clearspace mobilní navigace', () => {
+  test.use({ viewport: { width: 375, height: 812 } });
+
+  test.beforeEach(async ({ page }) => {
+    await seedAuth(page);
+    await page.goto(BOARD_URL);
+    await expect(page.locator('.app-container')).toHaveAttribute('data-hydrated', 'true');
+  });
+
+  test('hamburger otevře menu a nabídne navigaci i board akce', async ({ page }) => {
+    // Desktopová navigace i toolbarové akce jsou na mobilu skryté...
+    await expect(page.locator('.navbar-center')).toBeHidden();
+    await expect(page.getByTestId('project-intelligence-btn')).toBeHidden();
+
+    // ...ale dostupné z menu.
+    const burger = page.getByTestId('navbar-burger');
+    await expect(burger).toBeVisible();
+    await burger.click();
+
+    const menu = page.getByTestId('mobile-menu');
+    await expect(menu).toBeVisible();
+    await expect(menu.getByRole('link', { name: 'Projekty' })).toBeVisible();
+    await expect(page.getByTestId('mobile-menu-intelligence')).toBeVisible();
+    await expect(page.getByTestId('mobile-menu-new-task')).toBeVisible();
+    await expect(page.getByTestId('mobile-menu-logout')).toBeVisible();
+
+    // Escape zavře.
+    await page.keyboard.press('Escape');
+    await expect(menu).toHaveCount(0);
+  });
+
+  test('Project Intelligence lze otevřít z mobilního menu', async ({ page }) => {
+    await page.getByTestId('navbar-burger').click();
+    await page.getByTestId('mobile-menu-intelligence').click();
+
+    await expect(page.getByTestId('mobile-menu')).toHaveCount(0);
+    await expect(page.getByTestId('project-intelligence-drawer')).toBeVisible();
+  });
+
+  test('stránka na 375px vodorovně nepřetéká', async ({ page }) => {
+    const overflow = await page.evaluate(
+      () => document.documentElement.scrollWidth - document.documentElement.clientWidth
+    );
+    expect(overflow).toBeLessThanOrEqual(0);
+  });
+});

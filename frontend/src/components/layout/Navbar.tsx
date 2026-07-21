@@ -7,7 +7,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { useClickOutside } from '../../hooks/useClickOutside';
 import { useTheme, ThemeChoice } from '../../contexts/ThemeContext';
 import { deriveInitials } from '../../services/workspaceService';
-import { LogOut, Sun, Moon, Monitor } from 'lucide-react';
+import { LogOut, Sun, Moon, Monitor, Menu, X, Sparkles, Plus, LayoutGrid, CalendarDays } from 'lucide-react';
 
 const THEME_OPTIONS: { value: ThemeChoice; Icon: typeof Sun; label: string }[] = [
   { value: 'light', Icon: Sun, label: 'Světlý režim' },
@@ -37,13 +37,31 @@ function ThemeToggle() {
   );
 }
 
-export default function Navbar() {
+/**
+ * Kontext boardu pro mobilní menu. Volitelný -- ostatní stránky renderují
+ * <Navbar /> beze změny a příslušné sekce menu se prostě nezobrazí.
+ * Díky tomu nevzniká zvláštní "mobilní navbar" ani duplicitní komponenta.
+ */
+export interface NavbarBoardActions {
+  onOpenIntelligence: () => void;
+  onNewTask: () => void;
+  viewMode: 'board' | 'calendar';
+  onViewModeChange: (mode: 'board' | 'calendar') => void;
+}
+
+interface NavbarProps {
+  boardActions?: NavbarBoardActions;
+}
+
+export default function Navbar({ boardActions }: NavbarProps) {
   const pathname = usePathname() || '';
   const router = useRouter();
   const { profile, logout } = useAuth();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [lastProjectId, setLastProjectId] = useState<string | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuPanelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -57,18 +75,38 @@ export default function Navbar() {
     setIsDropdownOpen(false);
   });
 
+  // Mobilní menu: Escape zavře, tělo se nescrolluje pod panelem, focus jde do panelu.
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMenuOpen(false);
+    };
+    document.addEventListener('keydown', onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    menuPanelRef.current?.focus();
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isMenuOpen]);
+
   // Rozpoznání aktivní sekce podle aktuální adresy
   const isProjectsActive = pathname === '/' || pathname === '/projects';
   const isBoardActive = pathname.startsWith('/projects/');
 
+  const closeMenu = () => setIsMenuOpen(false);
+
   const handleLogout = async () => {
     setIsDropdownOpen(false);
+    closeMenu();
     await logout();
     router.push('/login');
   };
 
   const handleBoardClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    closeMenu();
     if (lastProjectId) {
       router.push(`/projects/${lastProjectId}`);
     } else {
@@ -78,11 +116,46 @@ export default function Navbar() {
 
   const handleTeamClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    closeMenu();
     router.push('/team');
   };
 
   const displayName = profile?.display_name || profile?.email?.split('@')[0] || 'Uživatel';
   const displayEmail = profile?.email || '';
+
+  // Jediná definice navigace -- používá ji desktop lišta i mobilní menu.
+  const navItems = [
+    {
+      key: 'board',
+      label: 'Board',
+      href: lastProjectId ? `/projects/${lastProjectId}` : '/',
+      onClick: handleBoardClick,
+      active: isBoardActive,
+      testId: 'navbar-board-link',
+    },
+    { key: 'projects', label: 'Projekty', href: '/', onClick: closeMenu, active: isProjectsActive },
+    {
+      key: 'ai-studio',
+      label: 'AI Studio',
+      href: '/ai-control-center',
+      onClick: closeMenu,
+      active: pathname === '/ai-control-center',
+    },
+    {
+      key: 'ai-history',
+      label: 'AI History',
+      href: '/ai-history',
+      onClick: closeMenu,
+      active: pathname === '/ai-history',
+      testId: 'navbar-history-link',
+    },
+    { key: 'team', label: 'Tým', href: '/team', onClick: handleTeamClick, active: pathname === '/team', testId: 'navbar-team-link' },
+  ];
+
+  const runBoardAction = (fn: () => void) => {
+    closeMenu();
+    fn();
+  };
 
   return (
     <header className="app-navbar">
@@ -91,55 +164,30 @@ export default function Navbar() {
           clearspace<span className="logo-dot">.</span>
         </Link>
       </div>
+
       <nav className="navbar-center">
-        <Link
-          href={lastProjectId ? `/projects/${lastProjectId}` : '/'}
-          onClick={handleBoardClick}
-          className={`nav-link ${isBoardActive ? 'active' : ''}`}
-          style={{ textDecoration: 'none', cursor: 'pointer' }}
-          data-testid="navbar-board-link"
-        >
-          Board
-        </Link>
-        <Link 
-          href="/" 
-          className={`nav-link ${isProjectsActive ? 'active' : ''}`} 
-          style={{ textDecoration: 'none', cursor: 'pointer' }}
-        >
-          Projekty
-        </Link>
-        <Link 
-          href="/ai-control-center" 
-          className={`nav-link ${pathname === '/ai-control-center' ? 'active' : ''}`} 
-          style={{ textDecoration: 'none', cursor: 'pointer' }}
-        >
-          AI Studio
-        </Link>
-        <Link 
-          href="/ai-history" 
-          className={`nav-link ${pathname === '/ai-history' ? 'active' : ''}`} 
-          style={{ textDecoration: 'none', cursor: 'pointer' }}
-          data-testid="navbar-history-link"
-        >
-          AI History
-        </Link>
-        <span
-          className={`nav-link ${pathname === '/team' ? 'active' : ''}`}
-          onClick={handleTeamClick}
-          style={{ cursor: 'pointer' }}
-          data-testid="navbar-team-link"
-        >
-          Tým
-        </span>
+        {navItems.map((item) => (
+          <Link
+            key={item.key}
+            href={item.href}
+            onClick={item.onClick}
+            className={`nav-link ${item.active ? 'active' : ''}`}
+            style={{ textDecoration: 'none', cursor: 'pointer' }}
+            data-testid={item.testId}
+          >
+            {item.label}
+          </Link>
+        ))}
       </nav>
-      
-      <div className="navbar-right" style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '1rem' }} ref={dropdownRef}>
+
+      {/* Layout v CSS (ne inline), aby na něj dosáhly breakpointy -- na mobilu se skrývá do menu. */}
+      <div className="navbar-right" ref={dropdownRef}>
         <ThemeToggle />
         <button
           type="button"
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           className="navbar-avatar"
-          style={{ 
+          style={{
             cursor: 'pointer',
             border: 'none',
             outline: 'none',
@@ -156,7 +204,7 @@ export default function Navbar() {
         </button>
 
         {isDropdownOpen && (
-          <div 
+          <div
             style={{
               position: 'absolute',
               right: 0,
@@ -183,9 +231,9 @@ export default function Navbar() {
                 {displayEmail}
               </span>
             </div>
-            
+
             <div style={{ height: '1px', backgroundColor: 'var(--border-color)', margin: '0.25rem 0' }} />
-            
+
             <button
               type="button"
               onClick={handleLogout}
@@ -215,6 +263,123 @@ export default function Navbar() {
           </div>
         )}
       </div>
+
+      {/* --- Mobil: hamburger (viditelný jen pod 768px, řeší CSS) --- */}
+      <button
+        type="button"
+        className="navbar-burger"
+        onClick={() => setIsMenuOpen(true)}
+        aria-label="Otevřít menu"
+        aria-expanded={isMenuOpen}
+        aria-controls="mobile-menu"
+        data-testid="navbar-burger"
+      >
+        <Menu size={22} />
+      </button>
+
+      {isMenuOpen && (
+        <div className="mobile-menu-overlay" onClick={closeMenu} data-testid="mobile-menu-overlay">
+          <div
+            id="mobile-menu"
+            className="mobile-menu"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Hlavní menu"
+            tabIndex={-1}
+            ref={menuPanelRef}
+            onClick={(e) => e.stopPropagation()}
+            data-testid="mobile-menu"
+          >
+            <div className="mobile-menu-head">
+              <span className="navbar-logo">clearspace<span className="logo-dot">.</span></span>
+              <button
+                type="button"
+                className="mobile-menu-close"
+                onClick={closeMenu}
+                aria-label="Zavřít menu"
+                data-testid="mobile-menu-close"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <nav className="mobile-menu-section" aria-label="Navigace">
+              <span className="mobile-menu-label">Navigace</span>
+              {navItems.map((item) => (
+                <Link
+                  key={item.key}
+                  href={item.href}
+                  onClick={item.onClick}
+                  className={`mobile-menu-item ${item.active ? 'active' : ''}`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+
+            {boardActions && (
+              <>
+                <div className="mobile-menu-section">
+                  <span className="mobile-menu-label">Akce</span>
+                  <button
+                    type="button"
+                    className="mobile-menu-item"
+                    onClick={() => runBoardAction(boardActions.onOpenIntelligence)}
+                    data-testid="mobile-menu-intelligence"
+                  >
+                    <Sparkles size={16} /> Project Intelligence
+                  </button>
+                  <button
+                    type="button"
+                    className="mobile-menu-item"
+                    onClick={() => runBoardAction(boardActions.onNewTask)}
+                    data-testid="mobile-menu-new-task"
+                  >
+                    <Plus size={16} /> Nový úkol
+                  </button>
+                </div>
+
+                <div className="mobile-menu-section">
+                  <span className="mobile-menu-label">Zobrazení</span>
+                  <button
+                    type="button"
+                    className={`mobile-menu-item ${boardActions.viewMode === 'board' ? 'active' : ''}`}
+                    onClick={() => runBoardAction(() => boardActions.onViewModeChange('board'))}
+                  >
+                    <LayoutGrid size={16} /> Board
+                  </button>
+                  <button
+                    type="button"
+                    className={`mobile-menu-item ${boardActions.viewMode === 'calendar' ? 'active' : ''}`}
+                    onClick={() => runBoardAction(() => boardActions.onViewModeChange('calendar'))}
+                  >
+                    <CalendarDays size={16} /> Kalendář
+                  </button>
+                </div>
+              </>
+            )}
+
+            <div className="mobile-menu-section">
+              <span className="mobile-menu-label">Motiv</span>
+              <ThemeToggle />
+            </div>
+
+            <div className="mobile-menu-section mobile-menu-profile">
+              <span className="mobile-menu-label">Profil</span>
+              <span className="mobile-menu-name">{displayName}</span>
+              {displayEmail && <span className="mobile-menu-email">{displayEmail}</span>}
+              <button
+                type="button"
+                className="mobile-menu-item is-danger"
+                onClick={handleLogout}
+                data-testid="mobile-menu-logout"
+              >
+                <LogOut size={16} /> Odhlásit se
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
