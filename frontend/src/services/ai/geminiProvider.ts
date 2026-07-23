@@ -31,10 +31,15 @@ export const geminiProvider: AiProvider = {
     const filteredMessages = messages.filter((m) => m.role !== 'system');
     
     // Namapujeme zprávy pro Gemini SDK (assistant -> model)
-    const contents = filteredMessages.map((msg) => ({
-      role: msg.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: msg.content }],
-    }));
+    const contents = filteredMessages.map((msg) => {
+      const parts: Array<{ text?: string; inlineData?: { mimeType: string; data: string } }> = [];
+      if (msg.content) parts.push({ text: msg.content });
+      if (msg.inlineData) parts.push({ inlineData: msg.inlineData });
+      return {
+        role: msg.role === 'assistant' ? 'model' : 'user',
+        parts: parts.length > 0 ? parts : [{ text: '' }],
+      };
+    });
 
     // Sestavíme konfiguraci pro generování
     const genConfig: {

@@ -21,6 +21,10 @@ export interface AiProvider {
 export interface AiMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;
+  inlineData?: {
+    mimeType: string;
+    data: string;
+  };
 }
 
 export interface AiContext {

@@ -3456,3 +3456,17 @@ body {
     font-size: 16px;
   }
 }
+
+/* ---------- Navbar: nové prvky (hledání, výběr AI modelu) ----------
+   Hledání a výběr modelu přibyly do .navbar-right a na tabletu už se
+   lišta nevešla (přetékala o 29px). Desktop zůstává beze změny. */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Hledání jen jako ikona -- zkratka ⌘K stejně na tabletu není po ruce. */
+  .navbar-search-hint { display: none; }
+  /* Výběr modelu je dostupný i v panelu Project Intelligence,
+     takže se o něj na tabletu nepřijde. */
+  .navbar-model-selector { display: none; }
+}
+
+/* Na mobilu je celý .navbar-right skrytý -- hledání proto žije
+   v hamburger menu (sekce Akce). */

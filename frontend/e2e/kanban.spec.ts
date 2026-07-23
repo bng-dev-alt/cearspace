@@ -267,6 +267,8 @@ test.describe('Clearspace mobilní navigace', () => {
     // Bez uložené volby -> sbalené, board začíná výš.
     // (Sbalení jede přes opacity/0fr, takže se testuje stavová třída.)
     await expect(page.locator('.app-hero')).toHaveClass(/collapsed/);
+    // Sbalení je animované -- bez počkání se měří mezihodnota a test bliká.
+    await settled(page, '.app-hero');
     const collapsedTop = await page.locator('.board-container').evaluate(
       (el) => Math.round(el.getBoundingClientRect().top + window.scrollY)
     );
@@ -274,6 +276,7 @@ test.describe('Clearspace mobilní navigace', () => {
     // Rozbalení se uloží...
     await page.getByTestId('toolbar-toggle-hero-btn').click();
     await expect(page.locator('.app-hero')).not.toHaveClass(/collapsed/);
+    await settled(page, '.app-hero');
     const expandedTop = await page.locator('.board-container').evaluate(
       (el) => Math.round(el.getBoundingClientRect().top + window.scrollY)
     );
@@ -282,6 +285,16 @@ test.describe('Clearspace mobilní navigace', () => {
     // ...a přežije reload, tedy mobilní výchozí stav ji nepřebije.
     await page.reload();
     await expect(page.locator('.app-hero')).not.toHaveClass(/collapsed/);
+  });
+
+  test('globální hledání je na mobilu dostupné z menu', async ({ page }) => {
+    // .navbar-right je na mobilu skrytý, takže tlačítko hledání z lišty
+    // není dosažitelné -- musí být v hamburger menu.
+    await expect(page.getByTestId('open-global-search-btn')).toBeHidden();
+
+    await page.getByTestId('navbar-burger').click();
+    await page.getByTestId('mobile-menu-search').click();
+    await expect(page.getByTestId('global-search-modal')).toBeVisible();
   });
 
   test('stránka na 375px vodorovně nepřetéká', async ({ page }) => {

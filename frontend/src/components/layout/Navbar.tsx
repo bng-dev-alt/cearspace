@@ -7,7 +7,10 @@ import { useAuth } from '../../hooks/useAuth';
 import { useClickOutside } from '../../hooks/useClickOutside';
 import { useTheme, ThemeChoice } from '../../contexts/ThemeContext';
 import { deriveInitials } from '../../services/workspaceService';
-import { LogOut, Sun, Moon, Monitor, Menu, X, Sparkles, Plus, LayoutGrid, CalendarDays } from 'lucide-react';
+import { LogOut, Sun, Moon, Monitor, Menu, X, Sparkles, Plus, LayoutGrid, CalendarDays, Search } from 'lucide-react';
+import AiModelSelector from '../ai/AiModelSelector';
+
+// ThemeToggle component...
 
 const THEME_OPTIONS: { value: ThemeChoice; Icon: typeof Sun; label: string }[] = [
   { value: 'light', Icon: Sun, label: 'Světlý režim' },
@@ -45,6 +48,7 @@ function ThemeToggle() {
 export interface NavbarBoardActions {
   onOpenIntelligence: () => void;
   onNewTask: () => void;
+  onOpenSearch?: () => void;
   viewMode: 'board' | 'calendar';
   onViewModeChange: (mode: 'board' | 'calendar') => void;
 }
@@ -123,6 +127,9 @@ export default function Navbar({ boardActions }: NavbarProps) {
   const displayName = profile?.display_name || profile?.email?.split('@')[0] || 'Uživatel';
   const displayEmail = profile?.email || '';
 
+  const userRole = profile?.workspace_role || 'owner'; // Default owner in demo
+  const isAdminOrOwner = userRole === 'owner' || userRole === 'admin';
+
   // Jediná definice navigace -- používá ji desktop lišta i mobilní menu.
   const navItems = [
     {
@@ -134,21 +141,25 @@ export default function Navbar({ boardActions }: NavbarProps) {
       testId: 'navbar-board-link',
     },
     { key: 'projects', label: 'Projekty', href: '/', onClick: closeMenu, active: isProjectsActive },
-    {
-      key: 'ai-studio',
-      label: 'AI Studio',
-      href: '/ai-control-center',
-      onClick: closeMenu,
-      active: pathname === '/ai-control-center',
-    },
-    {
-      key: 'ai-history',
-      label: 'AI History',
-      href: '/ai-history',
-      onClick: closeMenu,
-      active: pathname === '/ai-history',
-      testId: 'navbar-history-link',
-    },
+    ...(isAdminOrOwner
+      ? [
+          {
+            key: 'ai-studio',
+            label: 'AI Studio',
+            href: '/ai-control-center',
+            onClick: closeMenu,
+            active: pathname === '/ai-control-center',
+          },
+          {
+            key: 'ai-history',
+            label: 'AI History',
+            href: '/ai-history',
+            onClick: closeMenu,
+            active: pathname === '/ai-history',
+            testId: 'navbar-history-link',
+          },
+        ]
+      : []),
     { key: 'team', label: 'Tým', href: '/team', onClick: handleTeamClick, active: pathname === '/team', testId: 'navbar-team-link' },
   ];
 
@@ -182,6 +193,39 @@ export default function Navbar({ boardActions }: NavbarProps) {
 
       {/* Layout v CSS (ne inline), aby na něj dosáhly breakpointy -- na mobilu se skrývá do menu. */}
       <div className="navbar-right" ref={dropdownRef}>
+        {boardActions?.onOpenSearch && (
+          <button
+            type="button"
+            onClick={boardActions.onOpenSearch}
+            title="Hledat (Cmd+K)"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              padding: '0.3rem 0.6rem',
+              backgroundColor: 'var(--surface-1)',
+              border: '1px solid var(--border-color)',
+              borderRadius: '8px',
+              fontSize: '0.75rem',
+              fontWeight: 600,
+              color: 'var(--gray-text)',
+              cursor: 'pointer',
+            }}
+            className="navbar-search-btn"
+            data-testid="open-global-search-btn"
+          >
+            <Search size={14} />
+            <span
+              className="navbar-search-hint"
+              style={{ fontSize: '0.65rem', fontWeight: 800, padding: '0.05rem 0.3rem', borderRadius: '4px', backgroundColor: 'var(--bg-column)' }}
+            >
+              ⌘K
+            </span>
+          </button>
+        )}
+        <span className="navbar-model-selector">
+          <AiModelSelector compact />
+        </span>
         <ThemeToggle />
         <button
           type="button"
@@ -337,6 +381,16 @@ export default function Navbar({ boardActions }: NavbarProps) {
                   >
                     <Plus size={16} /> Nový úkol
                   </button>
+                  {boardActions.onOpenSearch && (
+                    <button
+                      type="button"
+                      className="mobile-menu-item"
+                      onClick={() => runBoardAction(boardActions.onOpenSearch!)}
+                      data-testid="mobile-menu-search"
+                    >
+                      <Search size={16} /> Hledat
+                    </button>
+                  )}
                 </div>
 
                 <div className="mobile-menu-section">

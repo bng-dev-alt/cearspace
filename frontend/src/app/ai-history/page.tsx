@@ -3,9 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../../components/layout/Navbar';
 import { aiHistoryService, AiHistoryRecord } from '../../services/ai/aiHistoryService';
-import { Clock, Sparkles, Folder, RotateCcw, AlertTriangle, Star, BarChart2, Eye, Download, Info, Check, Trash2 } from 'lucide-react';
+import { Clock, Sparkles, Folder, RotateCcw, AlertTriangle, Star, BarChart2, Eye, Download, Info, Check, Trash2, ShieldAlert } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function AiHistoryPage() {
+  const { profile } = useAuth();
+  const userRole = profile?.workspace_role || 'owner';
+  const isAdminOrOwner = userRole === 'owner' || userRole === 'admin';
   const [history, setHistory] = useState<AiHistoryRecord[]>([]);
   const [selectedRecord, setSelectedRecord] = useState<AiHistoryRecord | null>(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
@@ -65,6 +69,21 @@ export default function AiHistoryPage() {
         return <Clock size={18} style={{ color: 'var(--gray-text)' }} />;
     }
   };
+
+  if (!isAdminOrOwner) {
+    return (
+      <div className="app-container" style={{ backgroundColor: 'var(--bg-page)' }}>
+        <Navbar />
+        <div style={{ textAlign: 'center', padding: '5rem 1.5rem', maxWidth: '500px', margin: '0 auto' }}>
+          <ShieldAlert size={48} style={{ color: 'var(--purple-secondary)', marginBottom: '1rem' }} />
+          <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--dark-navy)' }}>Přístup vyhrazen pro Admina a Ownera</h2>
+          <p style={{ fontSize: '0.85rem', color: 'var(--gray-text)', marginTop: '0.5rem' }}>
+            Podstránka AI History je dostupná pouze pro administrátory a vlastníka workspace.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="app-container" style={{ backgroundColor: 'var(--bg-page)' }}>

@@ -8,6 +8,9 @@ import MemberFormModal from '../../components/team/MemberFormModal';
 import { useWorkspaceMembers } from '../../hooks/useWorkspaceMembers';
 import { TeamMember, WorkspaceRole } from '../../types/kanban';
 
+import UserDetailModal from '../../components/team/UserDetailModal';
+import ResetPasswordModal from '../../components/team/ResetPasswordModal';
+
 export default function TeamPage() {
   const { members, projectCounts, isLoading, ownerProfileId, addMember, editMember, deleteMember } = useWorkspaceMembers();
 
@@ -15,6 +18,9 @@ export default function TeamPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
   const [editing, setEditing] = useState<TeamMember | null>(null);
+
+  const [detailMember, setDetailMember] = useState<TeamMember | null>(null);
+  const [resetMember, setResetMember] = useState<TeamMember | null>(null);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -118,6 +124,8 @@ export default function TeamPage() {
             ownerProfileId={ownerProfileId}
             onEdit={handleEdit}
             onDelete={handleDelete}
+            onViewDetail={(m) => setDetailMember(m)}
+            onResetPassword={(m) => setResetMember(m)}
           />
         )}
       </main>
@@ -130,6 +138,22 @@ export default function TeamPage() {
         onClose={() => setFormOpen(false)}
         onSave={handleSave}
       />
+
+      {detailMember && (
+        <UserDetailModal
+          isOpen={!!detailMember}
+          onClose={() => setDetailMember(null)}
+          member={detailMember}
+        />
+      )}
+
+      {resetMember && (
+        <ResetPasswordModal
+          isOpen={!!resetMember}
+          onClose={() => setResetMember(null)}
+          member={resetMember}
+        />
+      )}
     </div>
   );
 }

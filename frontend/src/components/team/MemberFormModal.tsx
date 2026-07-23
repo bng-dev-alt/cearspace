@@ -170,8 +170,10 @@ export default function MemberFormModal({ isOpen, mode, member, isOwner, onClose
                 </div>
               ) : (
                 <select className="form-input" value={workspaceRole} onChange={(e) => setWorkspaceRole(e.target.value as WorkspaceRole)}>
-                  <option value="member">Member</option>
-                  <option value="admin">Admin</option>
+                  <option value="member">Member (Člen týmu)</option>
+                  <option value="admin">Admin (Správce)</option>
+                  <option value="viewer">Viewer (Čtenář)</option>
+                  <option value="owner">Owner (Vlastník)</option>
                 </select>
               )}
             </div>

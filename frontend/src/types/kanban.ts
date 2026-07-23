@@ -1,6 +1,6 @@
-// Role připravené pro budoucí Permissions (Release 23+). Zatím se neenforcují.
-export type WorkspaceRole = 'owner' | 'admin' | 'member';
-export type ProjectRole = 'owner' | 'member';
+export type WorkspaceRole = 'owner' | 'admin' | 'member' | 'viewer';
+export type ProjectRole = 'owner' | 'admin' | 'member' | 'viewer';
+export type UserRole = 'Owner' | 'Admin' | 'Member' | 'Viewer';
 
 /**
  * TeamMember = jediná identita člověka napříč aplikací (úroveň Workspace).
@@ -72,4 +72,41 @@ export interface Column {
   name: string;
   cards: Card[];
 }
+
+export interface ProjectInvitation {
+  id: string;
+  projectId: string;
+  email: string;
+  token: string;
+  role: 'owner' | 'member';
+  status: 'pending' | 'accepted' | 'rejected' | 'expired';
+  invitedBy?: string;
+  expiresAt: string;
+  createdAt: string;
+}
+
+export interface ProjectActivityLog {
+  id: string;
+  projectId: string;
+  cardId?: string;
+  actorId?: string;
+  actorName: string;
+  actionType: string;
+  entityType: 'task' | 'column' | 'project' | 'member';
+  details?: Record<string, unknown>;
+  createdAt: string;
+}
+
+export interface TaskResource {
+  id: string;
+  taskId: string;
+  storagePath: string;
+  filename: string;
+  mimeType: string;
+  size: number;
+  uploadedBy: string;
+  createdAt: string;
+  downloadUrl?: string;
+}
+
 

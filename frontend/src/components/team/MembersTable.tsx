@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Pencil, Trash2, Folder, UserCheck, UserPlus } from 'lucide-react';
+import { Pencil, Trash2, Folder, UserCheck, UserPlus, Eye, KeyRound } from 'lucide-react';
 import { TeamMember } from '../../types/kanban';
 
 interface MembersTableProps {
@@ -10,11 +10,14 @@ interface MembersTableProps {
   ownerProfileId?: string;
   onEdit: (member: TeamMember) => void;
   onDelete: (member: TeamMember) => void;
+  onViewDetail?: (member: TeamMember) => void;
+  onResetPassword?: (member: TeamMember) => void;
 }
 
 function roleLabel(member: TeamMember, isOwner: boolean): string {
   if (isOwner) return 'Owner';
   if (member.workspaceRole === 'admin') return 'Admin';
+  if (member.workspaceRole === 'viewer') return 'Viewer';
   return 'Member';
 }
 
@@ -24,7 +27,15 @@ function formatDate(iso: string): string {
   return d.toLocaleDateString('cs-CZ', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
-export default function MembersTable({ members, projectCounts, ownerProfileId, onEdit, onDelete }: MembersTableProps) {
+export default function MembersTable({
+  members,
+  projectCounts,
+  ownerProfileId,
+  onEdit,
+  onDelete,
+  onViewDetail,
+  onResetPassword,
+}: MembersTableProps) {
   return (
     <div className="members-table" data-testid="members-table">
       <div className="members-table-head">
@@ -83,6 +94,30 @@ export default function MembersTable({ members, projectCounts, ownerProfileId, o
 
             {/* Akce */}
             <div className="member-cell member-actions">
+              {onViewDetail && (
+                <button
+                  type="button"
+                  className="member-action-btn"
+                  onClick={() => onViewDetail(member)}
+                  title="Detail člena"
+                  data-testid={`view-detail-member-${member.id}`}
+                >
+                  <Eye size={15} />
+                </button>
+              )}
+
+              {onResetPassword && (
+                <button
+                  type="button"
+                  className="member-action-btn"
+                  onClick={() => onResetPassword(member)}
+                  title="Změnit heslo (Super Admin)"
+                  data-testid={`reset-password-member-${member.id}`}
+                >
+                  <KeyRound size={15} style={{ color: 'var(--purple-secondary)' }} />
+                </button>
+              )}
+
               <button
                 type="button"
                 className="member-action-btn"

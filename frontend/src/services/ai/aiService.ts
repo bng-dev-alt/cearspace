@@ -1,8 +1,8 @@
 import { providerFactory } from './providerFactory';
 import { promptBuilder } from './promptBuilder';
 import { AiRequest, AiResponse, AiModelConfig, AiContext, AiMessage } from './types';
-import { Card, Column } from '../../types/kanban';
-import { improveTaskSchema, backlogGenerateSchema, projectGenerateSchema, sprintPlanningSchema, projectRiskAnalysisSchema } from './schemas';
+import { Card, Column, TeamMember } from '../../types/kanban';
+import { improveTaskSchema, backlogGenerateSchema, projectGenerateSchema, sprintPlanningSchema, projectRiskAnalysisSchema, aiProjectManagerSchema, aiResourceAnalysisSchema, aiDailyBriefSchema, aiCapacityPlanningSchema, aiVoiceActionSchema } from './schemas';
 
 // Jednoduché lokální logování AI requestů na serveru
 function logAiRequest(
@@ -210,5 +210,86 @@ export const aiService = {
     };
     const messages = promptBuilder.buildRiskAnalysisPrompt(projectName, columns, context);
     return this._execute('risk_analysis', messages, config);
+  },
+
+  // 11. AI Project Manager (Suggested Board Changes & Health Analysis)
+  async executeProjectManager(
+    columns: Column[],
+    context?: AiContext
+  ): Promise<AiResponse> {
+    const config: AiModelConfig = {
+      model: process.env.GEMINI_MODEL || 'gemini-3.5-flash',
+      temperature: 0.3,
+      maxTokens: 4000,
+      responseSchema: aiProjectManagerSchema,
+    };
+    const messages = promptBuilder.buildProjectManagerPrompt(columns, context);
+    return this._execute('project_manager', messages, config);
+  },
+
+  // 12. AI Resource Analysis (Document Ingestion & Context Extraction)
+  async executeResourceAnalysis(
+    filename: string,
+    fileContentText: string,
+    context?: AiContext
+  ): Promise<AiResponse> {
+    const config: AiModelConfig = {
+      model: process.env.GEMINI_MODEL || 'gemini-3.5-flash',
+      temperature: 0.2,
+      maxTokens: 4000,
+      responseSchema: aiResourceAnalysisSchema,
+    };
+    const messages = promptBuilder.buildResourceAnalysisPrompt(filename, fileContentText, context);
+    return this._execute('resource_analysis', messages, config);
+  },
+
+  // 13. AI Daily Brief (Executive Briefing)
+  async executeDailyBrief(
+    columns: Column[],
+    activityLogsText: string,
+    context?: AiContext
+  ): Promise<AiResponse> {
+    const config: AiModelConfig = {
+      model: process.env.GEMINI_MODEL || 'gemini-3.5-flash',
+      temperature: 0.3,
+      maxTokens: 3000,
+      responseSchema: aiDailyBriefSchema,
+    };
+    const messages = promptBuilder.buildDailyBriefPrompt(columns, activityLogsText, context);
+    return this._execute('daily_brief', messages, config);
+  },
+
+  // 14. AI Capacity Planning & Workload Re-balancing
+  async executeCapacityPlanning(
+    columns: Column[],
+    members: TeamMember[],
+    context?: AiContext
+  ): Promise<AiResponse> {
+    const config: AiModelConfig = {
+      model: process.env.GEMINI_MODEL || 'gemini-3.5-flash',
+      temperature: 0.3,
+      maxTokens: 4000,
+      responseSchema: aiCapacityPlanningSchema,
+    };
+    const messages = promptBuilder.buildCapacityPlanningPrompt(columns, members, context);
+    return this._execute('capacity_planning', messages, config);
+  },
+
+  // 15. AI Voice Action Parsing (Multimodal Audio & Text)
+  async executeVoiceAction(
+    userTranscript: string,
+    columns: Column[],
+    context?: AiContext,
+    audioBase64?: string,
+    mimeType?: string
+  ): Promise<AiResponse> {
+    const config: AiModelConfig = {
+      model: process.env.GEMINI_MODEL || 'gemini-3.5-flash',
+      temperature: 0.2,
+      maxTokens: 2000,
+      responseSchema: aiVoiceActionSchema,
+    };
+    const messages = promptBuilder.buildVoiceActionPrompt(userTranscript, columns, context, audioBase64, mimeType);
+    return this._execute('voice_action', messages, config);
   },
 };

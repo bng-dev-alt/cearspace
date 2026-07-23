@@ -1,0 +1,58 @@
+# Claude Code Prompt
+
+Nejdříve si důkladně prostuduj přiložený dokument **AI_PROJECT_MANAGER_AGENT.md** a považuj jej za hlavní specifikaci této funkce.
+
+## Krok 1 – Audit
+
+Proveď audit současné implementace panelu Project Intelligence.
+
+Zjisti:
+- jak se počítá Health Score,
+- jaká data jsou již dostupná,
+- jak lze panel rozšířit bez změny současného UX,
+- jak připravit architekturu pro budoucí AI Project Manager.
+
+Nezačínej programovat.
+
+## Krok 2 – Implementační plán
+
+Navrhni implementaci po malých logických fázích.
+
+U každé fáze uveď:
+- cíl,
+- upravované soubory,
+- architektonická rozhodnutí,
+- rizika,
+- důvod pořadí.
+
+Počkej na moje schválení.
+
+## Krok 3 – Implementace
+
+Po schválení implementuj pouze první fázi.
+
+Po dokončení:
+- ověř build,
+- ověř TypeScript,
+- ověř lint,
+- proveď vlastní code review.
+
+Poté se zastav.
+
+## Review
+
+Po každé fázi napiš:
+- co bylo implementováno,
+- jaké soubory byly změněny,
+- architektonická rozhodnutí,
+- rizika,
+- doporučení,
+- návrh další fáze.
+
+Nepokračuj bez mého potvrzení.
+
+Důležité:
+- Zachovej současný design panelu Project Intelligence.
+- AI pouze navrhuje změny, nikdy je neprovádí automaticky.
+- Přemýšlej jako Senior Full-Stack Engineer a Product Engineer.
+- Minimalizuj spotřebu tokenů a implementuj po malých krocích.

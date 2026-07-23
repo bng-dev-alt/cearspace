@@ -326,6 +326,117 @@ CREATE POLICY "Users can manage assignees of their projects"
         )
     );
 
+-- 13. Project Invitations (Team Collaboration v1.2)
+CREATE TABLE IF NOT EXISTS public.invitations (
+    id TEXT PRIMARY KEY,
+    project_id TEXT REFERENCES public.projects(id) ON DELETE CASCADE NOT NULL,
+    email TEXT NOT NULL,
+    token TEXT UNIQUE NOT NULL,
+    role TEXT NOT NULL DEFAULT 'member' CHECK (role IN ('owner', 'member')),
+    status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected', 'expired')),
+    invited_by UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_invitations_project ON public.invitations(project_id);
+CREATE INDEX IF NOT EXISTS idx_invitations_token ON public.invitations(token);
+CREATE INDEX IF NOT EXISTS idx_invitations_email ON public.invitations(email);
+
+ALTER TABLE public.invitations ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Users can view invitations for their email or projects" ON public.invitations;
+CREATE POLICY "Users can view invitations for their email or projects"
+    ON public.invitations FOR SELECT
+    USING (
+        auth.jwt() ->> 'email' = email
+        OR EXISTS (
+            SELECT 1 FROM public.projects
+            WHERE public.projects.id = public.invitations.project_id
+            AND public.projects.user_id = auth.uid()
+        )
+    );
+
+DROP POLICY IF EXISTS "Project owners can manage invitations" ON public.invitations;
+CREATE POLICY "Project owners can manage invitations"
+    ON public.invitations FOR ALL
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.projects
+            WHERE public.projects.id = public.invitations.project_id
+            AND public.projects.user_id = auth.uid()
+        )
+    );
+
+-- 14. Activity Logs (Team Collaboration v1.2)
+CREATE TABLE IF NOT EXISTS public.activity_logs (
+    id TEXT PRIMARY KEY,
+    project_id TEXT REFERENCES public.projects(id) ON DELETE CASCADE NOT NULL,
+    card_id TEXT REFERENCES public.cards(id) ON DELETE SET NULL,
+    actor_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+    actor_name TEXT NOT NULL,
+    action_type TEXT NOT NULL,
+    entity_type TEXT NOT NULL,
+    details JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_activity_logs_project ON public.activity_logs(project_id);
+CREATE INDEX IF NOT EXISTS idx_activity_logs_created_at ON public.activity_logs(created_at DESC);
+
+ALTER TABLE public.activity_logs ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Users can view activity logs of their projects" ON public.activity_logs;
+CREATE POLICY "Users can view activity logs of their projects"
+    ON public.activity_logs FOR SELECT
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.projects
+            WHERE public.projects.id = public.activity_logs.project_id
+            AND public.projects.user_id = auth.uid()
+        )
+    );
+
+DROP POLICY IF EXISTS "Users can insert activity logs for their projects" ON public.activity_logs;
+CREATE POLICY "Users can insert activity logs for their projects"
+    ON public.activity_logs FOR INSERT
+    WITH CHECK (
+        EXISTS (
+            SELECT 1 FROM public.projects
+            WHERE public.projects.id = public.activity_logs.project_id
+            AND public.projects.user_id = auth.uid()
+        )
+    );
+
+-- 15. Task Resources (Task Resources v1)
+CREATE TABLE IF NOT EXISTS public.task_resources (
+    id TEXT PRIMARY KEY,
+    task_id TEXT REFERENCES public.cards(id) ON DELETE CASCADE NOT NULL,
+    storage_path TEXT NOT NULL,
+    filename TEXT NOT NULL,
+    mime_type TEXT NOT NULL,
+    size INTEGER NOT NULL DEFAULT 0,
+    uploaded_by TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_task_resources_task ON public.task_resources(task_id);
+
+ALTER TABLE public.task_resources ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Users can manage task resources of their projects" ON public.task_resources;
+CREATE POLICY "Users can manage task resources of their projects"
+    ON public.task_resources FOR ALL
+    USING (
+        EXISTS (
+            SELECT 1 FROM public.cards
+            JOIN public.columns ON public.columns.id = public.cards.column_id
+            JOIN public.projects ON public.projects.id = public.columns.project_id
+            WHERE public.cards.id = public.task_resources.task_id
+            AND public.projects.user_id = auth.uid()
+        )
+    );
+
 -- 12. One-time backfill migration from JSONB -> relational join tables (idempotent).
 -- Safe to run repeatedly; existing rows are skipped via ON CONFLICT.
 DO $$
@@ -354,3 +465,4 @@ BEGIN
         ON CONFLICT (card_id, member_id) DO NOTHING;
     END LOOP;
 END $$;
+

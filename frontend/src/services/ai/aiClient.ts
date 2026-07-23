@@ -14,13 +14,23 @@ export const aiClient = {
     let errorMsg = '';
     let responseData: any = null; // eslint-disable-line @typescript-eslint/no-explicit-any
 
+    // Attach user selected model preference if available in localStorage
+    let modelOverride = body.modelOverride;
+    if (!modelOverride && typeof window !== 'undefined') {
+      const savedModel = localStorage.getItem('selected_ai_model');
+      if (savedModel) {
+        modelOverride = savedModel;
+      }
+    }
+    const finalBody = { ...body, modelOverride };
+
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(body),
+        body: JSON.stringify(finalBody),
       });
 
       const responseTime = Date.now() - startTime;

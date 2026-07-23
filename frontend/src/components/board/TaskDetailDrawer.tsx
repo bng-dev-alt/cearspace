@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { X, Trash2, CheckSquare, MessageSquare, Sparkles, Clock, AlignLeft, AlignRight, Maximize2 } from 'lucide-react';
 import MultiAssigneeSelect from './MultiAssigneeSelect';
+import TaskResourcesSection from './TaskResourcesSection';
 import type { Card, Column, TeamMember } from '../../types/kanban';
 import { useAuth } from '../../hooks/useAuth';
 import { aiClient } from '../../services/ai/aiClient';
@@ -730,6 +731,18 @@ export default function TaskDetailDrawer({
               </button>
             </form>
           </div>
+
+          <div className="drawer-divider" />
+
+          {/* Resources Section (Task Resources v1 & v2 AI Context) */}
+          {card && (
+            <TaskResourcesSection
+              taskId={card.id}
+              cardTitle={card.title}
+              uploadedBy={profile?.display_name || 'Uživatel'}
+              onAddSubtaskToChecklist={(text) => onAddChecklistItem(columnId, card.id, text)}
+            />
+          )}
 
           <div className="drawer-divider" />
 

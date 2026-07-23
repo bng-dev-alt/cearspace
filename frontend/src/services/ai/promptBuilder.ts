@@ -1,4 +1,4 @@
-import { Card, Column } from '../../types/kanban';
+import { Card, Column, TeamMember } from '../../types/kanban';
 import { AiMessage, AiContext } from './types';
 
 // Helper pro formátování kontextu jednotlivé karty
@@ -403,4 +403,147 @@ ROZLOŽENÍ SLOUPCŮ A KARET NA BOARDU:
       { role: 'user', content: userContent }
     ];
   },
+
+  buildProjectManagerPrompt(columns: Column[], context?: AiContext): AiMessage[] {
+    const systemContent = `Jste zkušený AI Project Manager pro aplikaci ClearSpace Kanban.
+Vaším úkolem je analyzovat stav celého projektu (sloupce, úkoly, prioritizace, blokátory, rozpracovanost WIP) a navrhnout konkrétní, bezpečná doporučení na úpravu nástěnky (Suggested Board Changes).
+
+PRAVIDLA PRO NÁVRHY ZMĚN (Suggested Changes):
+1. Nikdy automaticky neměňte projekt, pouze vytvářejte návrhy (MOVE_TASK, CHANGE_PRIORITY, SPLIT_TASK, MERGE_TASKS, ARCHIVE_TASK).
+2. Pro každý návrh specifikujte jasné zdůvodnění (reason).
+3. Pokud navrhujete MOVE_TASK, uveďte přesně targetColumnId a targetColumnName.
+4. Pokud navrhujete SPLIT_TASK, uveďte konkrétní subtasksToCreate (seznam nových podúkolů).
+5. Vypočítejte celkové skóre zdraví projektu (healthScore: 0-100) a míru jistoty (confidenceScore: 0-100).
+6. Odpovězte výhradně ve validním formátu JSON podle poskytnutého schématu.`;
+
+    let userContent = formatProjectContext(context) + '\n\nAktuální stav nástěnky:\n';
+    columns.forEach(col => {
+      userContent += `Sloupec "${col.name}" (ID: ${col.id}, Počet karet: ${col.cards.length}):\n`;
+      col.cards.forEach(c => {
+        userContent += `  - Card ID: ${c.id} | Název: "${c.title}" | Priorita: ${c.priority || 'Medium'} | Termín: ${c.dueDate || 'Není'} | Archivováno: ${c.archived ? 'Ano' : 'Ne'}\n`;
+      });
+    });
+
+    userContent += '\nAnalyzujte projekt a navrhněte úpravy v JSON formátu.';
+
+    return [
+      { role: 'system', content: systemContent },
+      { role: 'user', content: userContent }
+    ];
+  },
+
+  buildResourceAnalysisPrompt(filename: string, fileContentText: string, context?: AiContext): AiMessage[] {
+    const systemContent = `Jste AI specialista na analýzu produktových a technických podkladů (PRD, specifikace, poznámky, tabulky) pro aplikaci ClearSpace Kanban.
+Vaším úkolem je pečlivě přečíst nahraný dokument, vytvořit výstižné shrnutí, extrahovat klíčová akceptační kritéria/požadavky, navrhnout rozpad na konkrétní podúkoly (subtasks) a identifikovat možná rizika.
+
+Odpovězte výhradně ve validním formátu JSON podle poskytnutého schématu.`;
+
+    const userContent = formatProjectContext(context) + `\n\nSoubor: "${filename}"\nObsah dokumentu:\n${fileContentText}\n\nProveďte hloubkovou analýzu dokumentu a vraťte JSON.`;
+
+    return [
+      { role: 'system', content: systemContent },
+      { role: 'user', content: userContent }
+    ];
+  },
+
+  buildDailyBriefPrompt(columns: Column[], activityLogsText: string, context?: AiContext): AiMessage[] {
+    const systemContent = `Jste AI Project Manager pro ClearSpace Kanban. Generujete denní přehled (Daily Executive Briefing) pro projektový tým.
+Analyzujte dokončené položky, rozpracované úkoly (WIP), blokátory a vytvořte motivující, věcné a přehledné ranní shrnutí v češtině.
+
+Odpovězte výhradně ve validním formátu JSON podle poskytnutého schématu.`;
+
+    let userContent = formatProjectContext(context) + '\n\nNedávná historie aktivit v projektu:\n' + activityLogsText + '\n\nStav nástěnky:\n';
+    columns.forEach(col => {
+      userContent += `Sloupec "${col.name}" (${col.cards.length} karet):\n`;
+      col.cards.forEach(c => {
+        userContent += `  - ${c.title} (Priorita: ${c.priority || 'Medium'}, Termín: ${c.dueDate || 'Není'})\n`;
+      });
+    });
+
+    userContent += '\nVytvořte denní přehled (Daily Brief) v JSON formátu.';
+
+    return [
+      { role: 'system', content: systemContent },
+      { role: 'user', content: userContent }
+    ];
+  },
+
+  buildCapacityPlanningPrompt(columns: Column[], members: TeamMember[], context?: AiContext): AiMessage[] {
+    const systemContent = `Jste AI specialista na plánování kapacit a vyvažování vytížení týmu (Capacity & Workload Balancing) pro ClearSpace Kanban.
+Spočítejte přiřazené úkoly a odhadované hodiny pro každého člena týmu, vyhodnoťte přetížení či volné kapacity a navrhněte konkrétní přerozdělení karet mezi členy.
+
+Odpovězte výhradně ve validním formátu JSON podle poskytnutého schématu.`;
+
+    let userContent = formatProjectContext(context) + '\n\nSeznam členů týmu:\n';
+    members.forEach(m => {
+      userContent += `  - Member ID: ${m.id} | Jméno: ${m.fullName} | Pozice: ${m.role || 'Člen'}\n`;
+    });
+
+    userContent += '\nRozložení úkolů ve sloupcích:\n';
+    columns.forEach(col => {
+      col.cards.forEach(c => {
+        const assignedNames = c.assignees ? c.assignees.map(m => m.fullName).join(', ') : c.assignee?.name || 'Nepřiřazeno';
+        userContent += `  - Card ID: ${c.id} | Název: "${c.title}" | Přiřazeno: ${assignedNames}\n`;
+      });
+    });
+
+    userContent += '\nProveďte kapacitní analýzu a navrhněte přerozdělení v JSON formátu.';
+
+    return [
+      { role: 'system', content: systemContent },
+      { role: 'user', content: userContent }
+    ];
+  },
+
+  buildVoiceActionPrompt(
+    userTranscript: string,
+    columns: Column[],
+    context?: AiContext,
+    audioBase64?: string,
+    mimeType?: string
+  ): AiMessage[] {
+    const systemContent = `Jste AI Voice Action Copilot pro ClearSpace Kanban.
+Posloucháte české nahrávky/příkazy a přetváříte je do přímých akcí na nástěnce.
+Podporované akce (intentType):
+- CREATE_CARD (vytvoření nové karty s názvem, sloupcem, prioritou, řešitelem)
+- MOVE_CARD (přesun existující karty do jiného sloupce)
+- CHANGE_PRIORITY (změna priority karty)
+- RENAME_COLUMN (přejmenování sloupce)
+- ADD_CHECKLIST (přidání položek do checklistu)
+- GENERAL_RESPONSE (vše ostatní)
+
+Vraťte výhradně JSON podle schématu aiVoiceActionSchema.`;
+
+    let userContent = formatProjectContext(context) + (userTranscript ? `\n\nTextový příkaz: "${userTranscript}"\n` : '\n\nV přiloženém audio souboru je česká hlasová nahrávka příkazu.\n');
+    userContent += '\nStav nástěnky:\n';
+    columns.forEach(col => {
+      userContent += `Sloupec "${col.name}":\n`;
+      col.cards.forEach(c => {
+        userContent += `  - Card: "${c.title}" (Priority: ${c.priority || 'Medium'})\n`;
+      });
+    });
+
+    userContent += '\nPřeložte hlasový příkaz z audia do strukturované akce v JSON.';
+
+    const userMessage: AiMessage = {
+      role: 'user',
+      content: userContent,
+    };
+
+    if (audioBase64 && mimeType) {
+      userMessage.inlineData = {
+        mimeType,
+        data: audioBase64,
+      };
+    }
+
+    return [
+      { role: 'system', content: systemContent },
+      userMessage,
+    ];
+  },
 };
+
+
+
+

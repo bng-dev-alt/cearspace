@@ -255,3 +255,181 @@ export const projectRiskAnalysisSchema = {
     'topAiRecommendations'
   ]
 };
+
+export const aiProjectManagerSchema = {
+  type: 'OBJECT',
+  properties: {
+    summary: { type: 'STRING', description: 'Stručné shrnutí stavu projektu a doporučení' },
+    healthScore: { type: 'NUMBER', description: 'Celkové skóre zdraví projektu (0-100)' },
+    confidenceScore: { type: 'NUMBER', description: 'Míra jistoty AI analýzy v procentech (0-100)' },
+    risks: {
+      type: 'ARRAY',
+      items: { type: 'STRING' },
+      description: 'Seznam zjištěných rizik'
+    },
+    blockers: {
+      type: 'ARRAY',
+      items: { type: 'STRING' },
+      description: 'Seznam blokujících faktů'
+    },
+    suggestedChanges: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        properties: {
+          id: { type: 'STRING', description: 'Unikátní ID návrhu' },
+          actionType: {
+            type: 'STRING',
+            enum: ['MOVE_TASK', 'CHANGE_PRIORITY', 'SPLIT_TASK', 'MERGE_TASKS', 'ARCHIVE_TASK'],
+            description: 'Typ akce'
+          },
+          targetCardId: { type: 'STRING', description: 'ID hlavní karty' },
+          targetCardTitle: { type: 'STRING', description: 'Název hlavní karty' },
+          targetColumnId: { type: 'STRING', description: 'ID cílového sloupce' },
+          targetColumnName: { type: 'STRING', description: 'Název cílového sloupce' },
+          newPriority: { type: 'STRING', enum: ['Low', 'Medium', 'High'], description: 'Nová priorita' },
+          reason: { type: 'STRING', description: 'Zdůvodnění návrhu' },
+          subtasksToCreate: {
+            type: 'ARRAY',
+            items: { type: 'STRING' },
+            description: 'Seznam podúkolů při rozdělení karty'
+          }
+        },
+        required: ['id', 'actionType', 'targetCardId', 'targetCardTitle', 'reason']
+      }
+    }
+  },
+  required: ['summary', 'healthScore', 'confidenceScore', 'risks', 'blockers', 'suggestedChanges']
+};
+
+export const aiResourceAnalysisSchema = {
+  type: 'OBJECT',
+  properties: {
+    summary: { type: 'STRING', description: 'Stručné shrnutí obsahu dokumentu v češtině' },
+    extractedRequirements: {
+      type: 'ARRAY',
+      items: { type: 'STRING' },
+      description: 'Extrahovaná akceptační kritéria a požadavky z dokumentu'
+    },
+    generatedSubtasks: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        properties: {
+          title: { type: 'STRING', description: 'Název podúkolu' },
+          description: { type: 'STRING', description: 'Stručný popis podúkolu' },
+          priority: { type: 'STRING', enum: ['Low', 'Medium', 'High'], description: 'Priorita' }
+        },
+        required: ['title', 'description', 'priority']
+      },
+      description: 'Navržené podúkoly vzniklé rozpadem dokumentu'
+    },
+    detectedRisks: {
+      type: 'ARRAY',
+      items: { type: 'STRING' },
+      description: 'Identifikovaná technická či procesní rizika zmíněná v dokumentu'
+    }
+  },
+  required: ['summary', 'extractedRequirements', 'generatedSubtasks', 'detectedRisks']
+};
+
+export const aiDailyBriefSchema = {
+  type: 'OBJECT',
+  properties: {
+    greeting: { type: 'STRING', description: 'Krátký ranní pozdrav a povzbuzení' },
+    executiveSummary: { type: 'STRING', description: 'Stručné manažerské shrnutí stavu projektu pro dnešní den' },
+    completedYesterday: {
+      type: 'ARRAY',
+      items: { type: 'STRING' },
+      description: 'Seznam úkolů a milníků dokončených za nedávnou dobu'
+    },
+    topPrioritiesToday: {
+      type: 'ARRAY',
+      items: { type: 'STRING' },
+      description: 'Top 3 klíčové priority, na které se má tým dnes zaměřit'
+    },
+    capacityAlerts: {
+      type: 'ARRAY',
+      items: { type: 'STRING' },
+      description: 'Upozornění na hrozící přetížení kapacit nebo vypršení termínů'
+    },
+    recommendedActions: {
+      type: 'ARRAY',
+      items: { type: 'STRING' },
+      description: 'Doporučené konkrétní kroky pro dnešní den'
+    }
+  },
+  required: ['greeting', 'executiveSummary', 'completedYesterday', 'topPrioritiesToday', 'capacityAlerts', 'recommendedActions']
+};
+
+export const aiCapacityPlanningSchema = {
+  type: 'OBJECT',
+  properties: {
+    totalCapacityHours: { type: 'NUMBER', description: 'Celková dostupná kapacita týmu v hodinách' },
+    allocatedHours: { type: 'NUMBER', description: 'Celkově alokované hodiny v úkolech' },
+    workloadByMember: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        properties: {
+          memberId: { type: 'STRING', description: 'ID člena' },
+          memberName: { type: 'STRING', description: 'Jméno člena' },
+          assignedCardsCount: { type: 'NUMBER', description: 'Počet přiřazených karet' },
+          estimatedHours: { type: 'NUMBER', description: 'Odhad hodin práce' },
+          status: { type: 'STRING', enum: ['OVERLOADED', 'BALANCED', 'AVAILABLE'], description: 'Stav vytížení' }
+        },
+        required: ['memberId', 'memberName', 'assignedCardsCount', 'estimatedHours', 'status']
+      },
+      description: 'Rozložení vytížení po jednotlivých členech týmu'
+    },
+    rebalanceSuggestions: {
+      type: 'ARRAY',
+      items: {
+        type: 'OBJECT',
+        properties: {
+          cardId: { type: 'STRING', description: 'ID karty k přerozdělení' },
+          cardTitle: { type: 'STRING', description: 'Název karty' },
+          fromMemberName: { type: 'STRING', description: 'Současný přiřazený člen' },
+          toMemberName: { type: 'STRING', description: 'Doporučený nový člen' },
+          reason: { type: 'STRING', description: 'Zdůvodnění přerozdělení' }
+        },
+        required: ['cardId', 'cardTitle', 'fromMemberName', 'toMemberName', 'reason']
+      },
+      description: 'Návrhy na vyrovnání kapacit přerozdělením karet'
+    }
+  },
+  required: ['totalCapacityHours', 'allocatedHours', 'workloadByMember', 'rebalanceSuggestions']
+};
+
+export const aiVoiceActionSchema = {
+  type: 'OBJECT',
+  properties: {
+    intentType: {
+      type: 'STRING',
+      enum: ['CREATE_CARD', 'MOVE_CARD', 'CHANGE_PRIORITY', 'RENAME_COLUMN', 'ADD_CHECKLIST', 'GENERAL_RESPONSE'],
+      description: 'Typ akce rozpoznaný z hlasového/textového příkazu'
+    },
+    summary: { type: 'STRING', description: 'Stručný srozumitelný popis akce v češtině pro schvalovací tlačítko' },
+    actionPayload: {
+      type: 'OBJECT',
+      properties: {
+        cardTitle: { type: 'STRING', description: 'Název karty' },
+        columnName: { type: 'STRING', description: 'Cílový nebo zdrojový sloupec' },
+        targetColumnName: { type: 'STRING', description: 'Nová název sloupce při přejmenování' },
+        priority: { type: 'STRING', enum: ['Low', 'Medium', 'High'], description: 'Priorita' },
+        assigneeName: { type: 'STRING', description: 'Jméno přiřazené osoby' },
+        details: { type: 'STRING', description: 'Podrobný popis úkolu' },
+        checklistItems: {
+          type: 'ARRAY',
+          items: { type: 'STRING' },
+          description: 'Položky pro checklist'
+        }
+      }
+    }
+  },
+  required: ['intentType', 'summary', 'actionPayload']
+};
+
+
+
+

@@ -1,0 +1,91 @@
+# Prompt
+
+Nejdříve si důkladně prostuduj přiložený dokument **TEAM_COLLABORATION_AGENT.md** a považuj ho za hlavní specifikaci této implementace.
+
+Dodržuj všechny architektonické principy, pravidla i cíle uvedené v dokumentu.
+
+Nezačínej okamžitě programovat.
+
+## Krok 1 – Analýza
+
+Nejdříve analyzuj současnou architekturu projektu a porovnej ji s požadavky v dokumentu.
+
+Poté vytvoř implementační plán rozdělený do malých logických fází.
+
+Každá fáze by měla být dostatečně malá, aby šla snadno zkontrolovat a případně vrátit.
+
+U každé fáze uveď:
+
+* cíl
+* očekávané změny
+* soubory, které budou upraveny
+* případná rizika
+* proč je tato fáze na tomto místě
+
+Pokud během analýzy objevíš lepší architekturu nebo lepší řešení, navrhni jej a vysvětli proč.
+
+---
+
+## Krok 2 – Implementace
+
+Po schválení plánu začni implementovat pouze první fázi.
+
+Neimplementuj více fází najednou.
+
+Po dokončení každé fáze:
+
+* ověř build
+* ověř TypeScript
+* ověř lint
+* zkontroluj případné regresní chyby
+* proveď vlastní code review
+
+Poté implementaci zastav.
+
+---
+
+## Review
+
+Po každé dokončené fázi vytvoř review obsahující:
+
+### Co bylo implementováno
+
+Stručný přehled změn.
+
+### Jaké soubory byly změněny
+
+Přehled všech vytvořených nebo upravených souborů.
+
+### Architektonická rozhodnutí
+
+Proč bylo zvoleno právě toto řešení.
+
+### Rizika
+
+Na co si dát pozor.
+
+### Další doporučení
+
+Pokud během implementace objevíš možnost zlepšení architektury, UX nebo výkonu, napiš ji.
+
+### Další fáze
+
+Na závěr napiš pouze stručný návrh další fáze.
+
+Poté čekej na moje rozhodnutí.
+
+Nepokračuj automaticky.
+
+---
+
+## Důležitá pravidla
+
+* Přemýšlej jako Senior Full-Stack Engineer.
+* Preferuj dlouhodobě udržitelnou architekturu před rychlým řešením.
+* Minimalizuj spotřebu tokenů.
+* Nepřepisuj fungující části projektu bez důvodu.
+* Zachovávej konzistentní strukturu projektu.
+* Využívej existující komponenty, hooky a utility.
+* Piš čistý, čitelný a produkčně připravený kód.
+* Pokud si nejsi jistý, nejdříve navrhni řešení a čekej na schválení.
+* Nikdy neimplementuj více fází bez mého potvrzení.

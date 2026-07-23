@@ -1,0 +1,110 @@
+# Prompt
+
+Nejdříve si důkladně prostuduj přiložený dokument **TASK_RESOURCES_AGENT.md** a považuj ho za hlavní specifikaci této implementace.
+
+Dodržuj všechny architektonické principy, cíle i budoucí roadmapu uvedenou v dokumentu.
+
+Nezačínej okamžitě programovat.
+
+---
+
+## Krok 1 – Audit
+
+Nejdříve proveď audit současné implementace projektu.
+
+Zjisti:
+
+* jak je aktuálně řešena struktura tasků,
+* jak funguje databáze,
+* jaké existují komponenty, hooky a utility,
+* jak nejlépe integrovat Resources bez narušení současné architektury.
+
+Pokud objevíš lepší architektonické řešení než je popsáno v dokumentu, navrhni jej a vysvětli proč.
+
+---
+
+## Krok 2 – Implementační plán
+
+Na základě auditu vytvoř implementační plán rozdělený do malých logických fází.
+
+Každá fáze musí být dostatečně malá, aby šla jednoduše zkontrolovat.
+
+U každé fáze uveď:
+
+* cíl
+* očekávané změny
+* upravované soubory
+* databázové změny
+* případná rizika
+* proč je tato fáze navržena právě v tomto pořadí
+
+Neimplementuj více fází najednou.
+
+Počkej na moje schválení.
+
+---
+
+## Krok 3 – Implementace
+
+Po schválení implementuj pouze první fázi.
+
+Po dokončení:
+
+* ověř build
+* ověř TypeScript
+* ověř lint
+* zkontroluj případné regresní chyby
+* proveď vlastní code review
+
+Poté implementaci zastav.
+
+---
+
+## Review
+
+Po každé dokončené fázi vytvoř přehled obsahující:
+
+### Co bylo implementováno
+
+Stručné shrnutí.
+
+### Jaké soubory byly změněny
+
+Přehled všech vytvořených nebo upravených souborů.
+
+### Architektonická rozhodnutí
+
+Proč bylo zvoleno právě toto řešení.
+
+### Rizika
+
+Na co si dát pozor.
+
+### Další doporučení
+
+Pokud během implementace objevíš možnost zlepšení architektury, výkonu nebo UX, navrhni ji.
+
+### Další fáze
+
+Na závěr stručně popiš následující doporučenou fázi.
+
+Poté čekej na moje rozhodnutí.
+
+Nepokračuj automaticky.
+
+---
+
+## Důležitá pravidla
+
+* Přemýšlej jako Senior Full-Stack Engineer a Tech Lead.
+* Zachovej současný design a UX aplikace.
+* Nevytvářej zbytečné abstrakce.
+* Preferuj jednoduché, čisté a dlouhodobě udržitelné řešení.
+* Piš produkčně připravený TypeScript.
+* Používej existující komponenty, hooky a utility.
+* Připrav architekturu pro budoucí AI Context, ale neimplementuj AI funkce.
+* Neimplementuj nic mimo rozsah MVP uvedený v dokumentu.
+* Minimalizuj spotřebu tokenů.
+* Nikdy neimplementuj více fází bez mého schválení.
+
+Cílem není pouze vytvořit upload souborů, ale vybudovat kvalitní a rozšiřitelný základ pro budoucí systém **Resources**, který se v dalších verzích stane jedním z hlavních pilířů aplikace.

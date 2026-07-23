@@ -8,9 +8,13 @@ import AiCharts from '../../components/ai/AiCharts';
 import AiFeatureBreakdown from '../../components/ai/AiFeatureBreakdown';
 import AiRequestHistory from '../../components/ai/AiRequestHistory';
 import { aiAnalyticsService, AiStats, FeatureStats, AiRequestLog } from '../../services/ai/aiAnalyticsService';
-import { Trash2, Cpu } from 'lucide-react';
+import { Trash2, Cpu, ShieldAlert } from 'lucide-react';
+import { useAuth } from '../../hooks/useAuth';
 
 export default function AiControlCenterPage() {
+  const { profile } = useAuth();
+  const userRole = profile?.workspace_role || 'owner';
+  const isAdminOrOwner = userRole === 'owner' || userRole === 'admin';
   const [stats, setStats] = useState<AiStats>({
     todayRequests: 0,
     todayTokens: 0,
@@ -61,6 +65,21 @@ export default function AiControlCenterPage() {
     aiAnalyticsService.setBudgetLimit(newLimit);
     setBudgetLimit(newLimit);
   };
+
+  if (!isAdminOrOwner) {
+    return (
+      <div className="app-container" style={{ backgroundColor: 'var(--bg-page)' }}>
+        <Navbar />
+        <div style={{ textAlign: 'center', padding: '5rem 1.5rem', maxWidth: '500px', margin: '0 auto' }}>
+          <ShieldAlert size={48} style={{ color: 'var(--purple-secondary)', marginBottom: '1rem' }} />
+          <h2 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--dark-navy)' }}>Přístup vyhrazen pro Admina a Ownera</h2>
+          <p style={{ fontSize: '0.85rem', color: 'var(--gray-text)', marginTop: '0.5rem' }}>
+            Podstránka AI Studio je dostupná pouze pro administrátory a vlastníka workspace.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="app-container" style={{ backgroundColor: 'var(--bg-page)' }}>

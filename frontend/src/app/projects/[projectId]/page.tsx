@@ -18,6 +18,11 @@ const GenerateTasksModal = dynamic(() => import('../../../components/board/Gener
 const GenerateSprintModal = dynamic(() => import('../../../components/board/GenerateSprintModal'), { ssr: false });
 const RiskAnalysisModal = dynamic(() => import('../../../components/board/RiskAnalysisModal'), { ssr: false });
 const ProjectIntelligenceDrawer = dynamic(() => import('../../../components/board/ProjectIntelligenceDrawer'), { ssr: false });
+const AiProjectManagerModal = dynamic(() => import('../../../components/board/AiProjectManagerModal'), { ssr: false });
+const AiDailyBriefModal = dynamic(() => import('../../../components/board/AiDailyBriefModal'), { ssr: false });
+const AiCapacityPlannerModal = dynamic(() => import('../../../components/board/AiCapacityPlannerModal'), { ssr: false });
+const GlobalSearchModal = dynamic(() => import('../../../components/search/GlobalSearchModal'), { ssr: false });
+const AiVoiceCopilotBar = dynamic(() => import('../../../components/ai/AiVoiceCopilotBar'), { ssr: false });
 
 import { useKanbanBoard } from '../../../hooks/useKanbanBoard';
 import { useDragAndDrop } from '../../../hooks/useDragAndDrop';
@@ -112,6 +117,26 @@ export default function ProjectBoardPage() {
   const [isSprintPlannerOpen, setIsSprintPlannerOpen] = useState(false);
   const [isRiskAnalysisOpen, setIsRiskAnalysisOpen] = useState(false);
   const [isIntelligenceOpen, setIsIntelligenceOpen] = useState(false);
+  const [isAiPmOpen, setIsAiPmOpen] = useState(false);
+  const [isDailyBriefOpen, setIsDailyBriefOpen] = useState(false);
+  const [isCapacityPlannerOpen, setIsCapacityPlannerOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isVoiceCopilotOpen, setIsVoiceCopilotOpen] = useState(false);
+
+  // Global Keyboard shortcut listeners (Cmd+K for search, Cmd+Shift+V for Voice Copilot)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsSearchOpen((prev) => !prev);
+      } else if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'v') {
+        e.preventDefault();
+        setIsVoiceCopilotOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Ambientní zdraví projektu pro pulse chip v toolbaru a "chytré" dlaždice (deterministické).
   const intelHealth = useMemo(() => computeProjectIntelligence(columns).health, [columns]);
@@ -428,6 +453,7 @@ export default function ProjectBoardPage() {
         boardActions={{
           onOpenIntelligence: () => setIsIntelligenceOpen(true),
           onNewTask: handleOpenGeneralAddModal,
+          onOpenSearch: () => setIsSearchOpen(true),
           viewMode,
           onViewModeChange: changeViewMode,
         }}
@@ -801,6 +827,42 @@ export default function ProjectBoardPage() {
           onGenerateTasks={() => setIsGenerateModalOpen(true)}
           onSprintPlanning={() => setIsSprintPlannerOpen(true)}
           onRiskAnalysis={() => setIsRiskAnalysisOpen(true)}
+          onOpenProjectManager={() => setIsAiPmOpen(true)}
+          onOpenDailyBrief={() => setIsDailyBriefOpen(true)}
+          onOpenCapacityPlanner={() => setIsCapacityPlannerOpen(true)}
+          onOpenVoiceCopilot={() => setIsVoiceCopilotOpen(true)}
+        />
+      )}
+
+      {isAiPmOpen && (
+        <AiProjectManagerModal
+          isOpen={isAiPmOpen}
+          onClose={() => setIsAiPmOpen(false)}
+          columns={columns}
+          projectName={project?.name || 'Tento projekt'}
+          onMoveCard={moveCard}
+          onUpdateCard={editCard}
+          onAddCard={(colId, cardData) => addCard(colId, cardData.title, cardData.details, cardData.priority)}
+        />
+      )}
+
+      {isDailyBriefOpen && (
+        <AiDailyBriefModal
+          isOpen={isDailyBriefOpen}
+          onClose={() => setIsDailyBriefOpen(false)}
+          columns={columns}
+          projectName={project?.name || 'Tento projekt'}
+        />
+      )}
+
+      {isCapacityPlannerOpen && (
+        <AiCapacityPlannerModal
+          isOpen={isCapacityPlannerOpen}
+          onClose={() => setIsCapacityPlannerOpen(false)}
+          columns={columns}
+          members={teamMembers}
+          projectName={project?.name || 'Tento projekt'}
+          onUpdateCard={editCard}
         />
       )}
 
@@ -812,6 +874,30 @@ export default function ProjectBoardPage() {
           projectMemberIds={teamMembers.map((m) => m.id)}
           onChangeMembers={setProjectMembers}
           onManageWorkspace={() => router.push('/team')}
+        />
+      )}
+
+      {isSearchOpen && (
+        <GlobalSearchModal
+          isOpen={isSearchOpen}
+          onClose={() => setIsSearchOpen(false)}
+          columns={columns}
+          onSelectCard={(colId, card) => handleOpenDrawer(colId, card)}
+        />
+      )}
+
+      {isVoiceCopilotOpen && (
+        <AiVoiceCopilotBar
+          isOpen={isVoiceCopilotOpen}
+          onClose={() => setIsVoiceCopilotOpen(false)}
+          columns={columns}
+          members={teamMembers}
+          projectName={project?.name || 'Tento projekt'}
+          onAddCard={(colId, cardData) => addCard(colId, cardData.title, cardData.details, cardData.priority)}
+          onMoveCard={moveCard}
+          onUpdateCard={editCard}
+          onAddChecklistItem={addChecklistItem}
+          onRenameColumn={renameColumn}
         />
       )}
     </div>

@@ -9,6 +9,7 @@ export interface Profile {
   email: string;
   display_name: string;
   avatar_url?: string;
+  workspace_role?: 'owner' | 'admin' | 'member' | 'viewer';
   created_at: string;
 }
 

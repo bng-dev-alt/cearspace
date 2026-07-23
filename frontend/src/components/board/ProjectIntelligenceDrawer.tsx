@@ -22,6 +22,7 @@ import {
   type InsightSeverity,
 } from '../../lib/projectIntelligence';
 import { aiClient } from '../../services/ai/aiClient';
+import AiModelSelector from '../ai/AiModelSelector';
 
 interface ChatMsg {
   role: 'user' | 'assistant';
@@ -38,6 +39,10 @@ interface ProjectIntelligenceDrawerProps {
   onGenerateTasks: () => void;
   onSprintPlanning: () => void;
   onRiskAnalysis: () => void;
+  onOpenProjectManager?: () => void;
+  onOpenDailyBrief?: () => void;
+  onOpenCapacityPlanner?: () => void;
+  onOpenVoiceCopilot?: () => void;
 }
 
 const SEVERITY_ICON: Record<InsightSeverity, React.ComponentType<{ size?: number }>> = {
@@ -63,6 +68,10 @@ export default function ProjectIntelligenceDrawer({
   onGenerateTasks,
   onSprintPlanning,
   onRiskAnalysis,
+  onOpenProjectManager,
+  onOpenDailyBrief,
+  onOpenCapacityPlanner,
+  onOpenVoiceCopilot,
 }: ProjectIntelligenceDrawerProps) {
   const drawerRef = useRef<HTMLDivElement>(null);
 
@@ -189,9 +198,12 @@ export default function ProjectIntelligenceDrawer({
       >
         {/* Header s pozicovacím barem (Left / Focused / Right) */}
         <div className="drawer-header" style={{ justifyContent: 'space-between', gap: '0.75rem' }}>
-          <span className="pi-brand">
-            <Sparkles size={16} /> Project Intelligence
-          </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <span className="pi-brand">
+              <Sparkles size={16} /> Project Intelligence
+            </span>
+            <AiModelSelector compact />
+          </div>
 
           <div className="pi-mode-switch" data-testid="pi-mode-switcher">
             <button
@@ -265,6 +277,124 @@ export default function ProjectIntelligenceDrawer({
               </div>
             )}
           </section>
+
+          {/* AI Project Manager v2 Launchers */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.85rem' }}>
+            {onOpenProjectManager && (
+              <button
+                type="button"
+                onClick={() => {
+                  requestClose();
+                  window.setTimeout(onOpenProjectManager, 230);
+                }}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem',
+                  padding: '0.7rem 1rem',
+                  backgroundColor: 'var(--purple-secondary)',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontSize: '0.85rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  boxShadow: 'var(--shadow-md)',
+                  transition: 'var(--spring-transition)',
+                }}
+                data-testid="open-ai-pm-btn"
+              >
+                <Sparkles size={16} />
+                Spustit AI Project Manager (Optimalizace nástěnky)
+              </button>
+            )}
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+              {onOpenDailyBrief && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    requestClose();
+                    window.setTimeout(onOpenDailyBrief, 230);
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.4rem',
+                    padding: '0.55rem 0.75rem',
+                    backgroundColor: 'var(--bg-column)',
+                    color: 'var(--dark-navy)',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: '6px',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                  data-testid="open-ai-daily-brief-btn"
+                >
+                  ☀️ Daily Brief
+                </button>
+              )}
+
+              {onOpenCapacityPlanner && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    requestClose();
+                    window.setTimeout(onOpenCapacityPlanner, 230);
+                  }}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.4rem',
+                    padding: '0.55rem 0.75rem',
+                    backgroundColor: 'var(--bg-column)',
+                    color: 'var(--dark-navy)',
+                    border: '1px solid var(--border-color)',
+                    borderRadius: '6px',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                  data-testid="open-ai-capacity-planner-btn"
+                >
+                  ⚖️ Kapacity týmu
+                </button>
+              )}
+            </div>
+
+            {onOpenVoiceCopilot && (
+              <button
+                type="button"
+                onClick={() => {
+                  requestClose();
+                  window.setTimeout(onOpenVoiceCopilot, 230);
+                }}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.4rem',
+                  padding: '0.55rem 0.75rem',
+                  backgroundColor: 'rgba(117, 57, 145, 0.08)',
+                  color: 'var(--purple-secondary)',
+                  border: '1px solid var(--purple-secondary)',
+                  borderRadius: '6px',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+                data-testid="open-ai-voice-copilot-btn"
+              >
+                🎙️ AI Voice Copilot (Hlasové příkazy cs-CZ)
+              </button>
+            )}
+          </div>
 
           {/* INSIGHTS */}
           <section>
